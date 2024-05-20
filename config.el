@@ -1,11 +1,10 @@
 (add-to-list 'load-path "~/.emacs.d/scripts/")
 
 (require 'elpaca-setup)  ;; The Elpaca Package Manager
-;;(require 'buffer-move)   ;; Buffer-move for better window management
-;;(require 'app-launchers) ;; Use emacs as a run launcher like dmenu (experimental)
+(require 'buffer-move)   ;; Buffer-move for better window management
 
-(setq backup-directory-alist '((".*" . "~/.emacs.archive")))
-(setq auto-save-file-name-transforms `((".*" "~/.archive/" t)))
+(setq backup-directory-alist '((".*" . "~/.emacs.d/archive/")))
+(setq auto-save-file-name-transforms `((".*" "~/.emacs.d/archive/" t)))
 
 (use-package company
   :defer 2
@@ -169,11 +168,31 @@
 ;; The following prevents <> from auto-pairing when electric-pair-mode is on.
 ;; Otherwise, org-tempo is broken when you try to <s TAB...
 (add-hook 'org-mode-hook (lambda ()
-           (setq-local electric-pair-inhibit-predicate
-                   `(lambda (c)
-                  (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))))
+			   (setq-local electric-pair-inhibit-predicate
+				       `(lambda (c)
+					  (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))))
 (global-auto-revert-mode t)  ;; Automatically show changes if the file has changed
 (setq org-edit-src-content-indentation 0) ;; Set src block automatic indent to 0 instead of 2.
+
+;; Window rules
+(setq display-buffer-alist ;; Setting window rules
+(setq display-buffer-alist
+      '(("\\*messages.*"
+         (display-buffer-in-side-window)
+         (window-height . 0.15)
+         (side . bottom))
+	   ("\\*backtrace.*"
+         (display-buffer-in-side-window)
+         (window-height . 0.15)
+         (side . bottom))
+        ("\\*warnings.*"
+         (display-buffer-in-side-window)
+         (window-height . 0.15)
+         (side . bottom))))      )
+
+;; Disable the direct option modifier, freeing up the macOS option key
+(if (boundp 'ns-option-modifier)
+    (setq ns-option-modifier nil))
 
 (use-package general
   :ensure t
@@ -212,15 +231,19 @@
     "b R" '(rename-buffer :wk "Rename buffer")
     "b s" '(basic-save-buffer :wk "Save buffer")
     "b S" '(save-some-buffers :wk "Save multiple buffers")
-)
-    
- (kc/leader-keys
+    )
+
+  (kc/leader-keys
+    "c" '(:ignore t :wk "Commands")
+    "c r" '(repeat :wk "Repeat last command"))
+  
+  (kc/leader-keys
     "d" '(:ignore t :wk "Dired")
     "d d" '(dired :wk "Open dired")
     "d j" '(dired-jump :wk "Dired jump to current")
     "d n" '(neotree-dir :wk "Open directory in neotree")
     "d p" '(peep-dired :wk "Peep-dired"))
- 
+  
   (kc/leader-keys
     "e" '(:ignore t :wk "Eshell/Evaluate")    
     "e b" '(eval-buffer :wk "Evaluate elisp in buffer")
@@ -251,28 +274,45 @@
     "f r" '(counsel-recentf :wk "Find recent files")
     )
 
- (kc/leader-keys
-  "h" '(:ignore t :wk "Help")
-  "h a" '(counsel-apropos :wk "Apropos")
-  "h b" '(describe-bindings :wk "Describe bindings")
-  "h c" '(describe-char :wk "Describe character under cursor")
-  "h e" '(view-echo-area-messages :wk "View echo area messages")
-  "h f" '(describe-function :wk "Describe function")
-  "h F" '(describe-face :wk "Describe face")
-  "h i" '(info :wk "Info")
-  "h k" '(describe-key :wk "Describe key")
-  "h l" '(view-lossage :wk "Display recent keystrokes and the commands run")
-  "h r" '(:ignore t :wk "Reload")
-  "h r r" '((lambda () (interactive)
-              (load-file "~/.emacs.d/init.el")
-              (ignore (elpaca-process-queues)))
-            :wk "Reload emacs config")
-  "h t" '(load-theme :wk "Load theme")
-  "h v" '(describe-variable :wk "Describe variable")
-  "h w" '(where-is :wk "Prints keybinding for command if set")
-  "h x" '(describe-command :wk "Display full documentation for command"))
- 
-(kc/leader-keys
+  (kc/leader-keys
+    "g" '(:ignore t :wk "Go")
+    ;; These are copies of keybindings in spc w
+    ;; But this is so deep in my muscle memory it's better than retraining
+    ;; Window motions
+    "g h" '(evil-window-left :wk "Window left")
+    "g j" '(evil-window-down :wk "Window down")
+    "g k" '(evil-window-up :wk "Window up")
+    "g l" '(evil-window-right :wk "Window right")
+    "g w" '(evil-window-next :wk "Goto next window")
+    ;; Move Windows
+    "g H" '(buf-move-left :wk "Buffer move left")
+    "g J" '(buf-move-down :wk "Buffer move down")
+    "g K" '(buf-move-up :wk "Buffer move up")
+    "g L" '(buf-move-right :wk "Buffer move right")
+    )
+
+  (kc/leader-keys
+    "h" '(:ignore t :wk "Help")
+    "h a" '(counsel-apropos :wk "Apropos")
+    "h b" '(describe-bindings :wk "Describe bindings")
+    "h c" '(describe-char :wk "Describe character under cursor")
+    "h e" '(view-echo-area-messages :wk "View echo area messages")
+    "h f" '(describe-function :wk "Describe function")
+    "h F" '(describe-face :wk "Describe face")
+    "h i" '(info :wk "Info")
+    "h k" '(describe-key :wk "Describe key")
+    "h l" '(view-lossage :wk "Display recent keystrokes and the commands run")
+    "h r" '(:ignore t :wk "Reload")
+    "h r r" '((lambda () (interactive)
+		(load-file "~/.emacs.d/init.el")
+		(ignore (elpaca-process-queues)))
+              :wk "Reload emacs config")
+    "h t" '(load-theme :wk "Load theme")
+    "h v" '(describe-variable :wk "Describe variable")
+    "h w" '(where-is :wk "Prints keybinding for command if set")
+    "h x" '(describe-command :wk "Display full documentation for command"))
+  
+  (kc/leader-keys
     "r" '(:ignore t :wk "Org")
     "r a" '(org-agenda :wk "Org agenda")
     "r e" '(org-export-dispatch :wk "Org export dispatch")
@@ -304,10 +344,10 @@
   (kc/leader-keys
     "t" '(:ignore t :wk "Toggle")
     "t e" '(eshell-toggle :wk "Toggle eshell")
+    "t i" '(org-toggle-inline-images :wk "Toggle inline images in org mode")
     "t l" '(display-line-numbers-mode :wk "Toggle line numbers")
     "t n" '(neotree-toggle :wk "Toggle neotree file viewer")
-    "t o" '(
-org-mode :wk "Toggle org mode")
+    "t o" '(org-mode :wk "Toggle org mode")
     "t t" '(visual-line-mode :wk "Toggle truncated lines")
     "t v" '(vterm-toggle :wk "Toggle vterm"))
 
@@ -330,8 +370,8 @@ org-mode :wk "Toggle org mode")
     "w K" '(buf-move-up :wk "Buffer move up")
     "w L" '(buf-move-right :wk "Buffer move right"))
 
- ;; end parans
-)
+  ;; end parans
+  )
 
 (use-package ruby-mode)
 
@@ -384,6 +424,21 @@ org-mode :wk "Toggle org mode")
  '(org-level-7 ((t (:inherit outline-5 :height 1.05)))))
 
 (require 'org-tempo)
+
+(defun org-image-resize (frame size)
+  (when (derived-mode-p 'org-mode)
+    (if (< (window-total-width) 80)
+        (setq org-image-actual-width (window-pixel-width))
+      (setq org-image-actual-width (* 80 (window-font-width))))
+    (org-redisplay-inline-images)))
+
+(add-hook 'window-size-change-functions 'org-image-resize)
+
+(defun my/org-toggle-inline-images-advice (orig-fun &rest args)
+  (apply orig-fun args)
+  (org-image-resize (selected-frame) nil))  ; Adjusted to pass two arguments
+
+(advice-add 'org-toggle-inline-images :around #'my/org-toggle-inline-images-advice)
 
 (use-package perspective
   :ensure t
