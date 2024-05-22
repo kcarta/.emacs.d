@@ -1,4 +1,3 @@
-
 #+AUTHOR: Kristofer Carta (KC)
 #+TITLE: KC's GNU Emacs Config
 #+DESCRIPTION: KC's personal Emacs config.
@@ -30,6 +29,7 @@ Based on: https://gitlab.com/dwt1/configuring-emacs
   - [[#other-sane-defaults][Other sane defaults]]
 - [[#keybindings][KEYBINDINGS]]
 - [[#languages][LANGUAGES]]
+- [[#markdown][MARKDOWN]]
 - [[#modeline][MODELINE]]
 - [[#neotree-file-viewer][NEOTREE FILE VIEWER]]
 - [[#org-mode][ORG MODE]]
@@ -48,6 +48,8 @@ Based on: https://gitlab.com/dwt1/configuring-emacs
   - [[#eshell][Eshell]]
   - [[#vterm][Vterm]]
   - [[#vterm-toggle][Vterm-Toggle]]
+- [[#tabs][TABS]]
+  - [[#investigate-using-this][investigate using this]]
 - [[#themes][THEMES]]
 - [[#which-key][WHICH-KEY]]
 
@@ -202,23 +204,24 @@ This package implements hiding or abbreviation of the modeline displays (lighter
 * EVIL
 
 #+begin_src emacs-lisp
-    (use-package evil 
-      :ensure t 
-      :demand t
-      :init 
-        (setq evil-want-keybinding nil)
-        (setq evil-vsplit-window-right t)
-        (setq evil-split-window-below t)
-        (evil-mode))
+  (use-package evil 
+    :ensure t 
+    :demand t
+    :init 
+      (setq evil-want-keybinding nil)
+      (setq evil-vsplit-window-right t)
+      (setq evil-split-window-below t)
+      (evil-mode))
 
-  ;; Using RETURN to follow links in Org/Evil 
-  ;; Unmap keys in 'evil-maps if not done, (setq org-return-follows-link t) will not work
-  (with-eval-after-load 'evil-maps
-    (define-key evil-motion-state-map (kbd "SPC") nil)
-    (define-key evil-motion-state-map (kbd "RET") nil)
-    (define-key evil-motion-state-map (kbd "TAB") nil))
-  ;; Setting RETURN key in org-mode to follow links
-    (setq org-return-follows-link  t)
+;; Using RETURN to follow links in Org/Evil 
+;; Unmap keys in 'evil-maps if not done, (setq org-return-follows-link t) will not work
+(with-eval-after-load 'evil-maps
+  (define-key evil-motion-state-map (kbd "SPC") nil)
+  (define-key evil-motion-state-map (kbd "RET") nil)
+  ;; TODO figure out how to get this to not 
+  ;;(define-key evil-normal-state-map (kbd "RET") (lambda () (interactive) (next-line)))
+  (define-key evil-motion-state-map (kbd "TAB") nil))
+(setq org-return-follows-link t)
 
 #+end_src
 
@@ -227,13 +230,14 @@ This package implements hiding or abbreviation of the modeline displays (lighter
 This is an icon set that can be used with dashboard, dired, ibuffer and other Emacs programs.
   
 #+begin_src emacs-lisp
-    (use-package all-the-icons
-      :ensure t
-      :if (display-graphic-p))
+  (use-package all-the-icons
+    :ensure t
+    :if (display-graphic-p))
 
-  (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
-    ;;(use-package all-the-icons-dired
-      ;;:hook (dired-mode . (lambda () (all-the-icons-dired-mode t))))
+(add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
+  (use-package all-the-icons-dired
+    :ensure t
+    :hook (dired-mode . (lambda () (all-the-icons-dired-mode t))))
 #+end_src
 
 * FONTS
@@ -242,15 +246,7 @@ Defining the various fonts that Emacs will use.
 #+begin_src emacs-lisp
   (set-face-attribute 'default nil
     :font "Fira Code"
-    :height 140
-    :weight 'regular)
-  (set-face-attribute 'variable-pitch nil
-    :font "Fira Sans"
-    :height 150
-    :weight 'medium)
-  (set-face-attribute 'fixed-pitch nil
-    :font "Fira Code"
-    :height 140
+    :height 160
     :weight 'regular)
   ;; Makes commented text and keywords italics.
   ;; This is working in emacsclient but not emacs.
@@ -263,10 +259,10 @@ Defining the various fonts that Emacs will use.
   ;; This sets the default font on all graphical frames created after restarting Emacs.
   ;; Does the same thing as 'set-face-attribute default' above, but emacsclient fonts
   ;; are not right unless I also add this method of setting the default font.
-  (add-to-list 'default-frame-alist '(font . "Fira Code-14"))
+  (add-to-list 'default-frame-alist '(font . "Fira Code-16"))
 
   ;; Uncomment the following line if line spacing needs adjusting.
-  (setq-default line-spacing 0.12)
+  ;;(setq-default line-spacing 0.12)
 
 #+end_src
 
@@ -309,6 +305,7 @@ By default, Emacs requires you to hit ESC three times to escape quit the minibuf
 (delete-selection-mode 1)    ;; You can select text and delete it by typing.
 (electric-indent-mode 1)    ;; Turn off the weird indenting that Emacs does by default.
 (org-indent-mode 1)
+(setq truncate-lines nil)
 (electric-pair-mode 1)       ;; Turns on automatic parens pairing
 ;; The following prevents <> from auto-pairing when electric-pair-mode is on.
 ;; Otherwise, org-tempo is broken when you try to <s TAB...
@@ -427,6 +424,7 @@ By default, Emacs requires you to hit ESC three times to escape quit the minibuf
 
   (kc/leader-keys
     "g" '(:ignore t :wk "Go")
+    "g a" '(org-open-at-point :wk "Open link under cursor")
     ;; These are copies of keybindings in spc w
     ;; But this is so deep in my muscle memory it's better than retraining
     ;; Window motions
@@ -519,7 +517,12 @@ By default, Emacs requires you to hit ESC three times to escape quit the minibuf
     "w H" '(buf-move-left :wk "Buffer move left")
     "w J" '(buf-move-down :wk "Buffer move down")
     "w K" '(buf-move-up :wk "Buffer move up")
-    "w L" '(buf-move-right :wk "Buffer move right"))
+    "w L" '(buf-move-right :wk "Buffer move right")
+    ;; Tabs
+    ;;"w t" '(:ignore t :wk "Tabs")
+    ;;"w t n" '(centaur-tabs--create-new-tab :wk "Create new tab (Centaur)")
+    ;;"w t c" '(centaur-tabs--kill-this-buffer-dont-ask :wk "Close the tab/buffer (Centaur)")
+    )
 
   ;; end parans
   )
@@ -531,9 +534,17 @@ Emacs has built-in programming language modes for Lisp, Scheme, DSSSL, Ada, ASM,
 
 #+begin_src emacs-lisp
 (use-package ruby-mode)
+#+end_src
+* MARKDOWN
+#+begin_src emacs-lisp
+
+(use-package markdown-mode
+  :ensure t
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode))
+  :init (setq markdown-command "/usr/local/bin/multimarkdown"))
 
 #+end_src
-
 * MODELINE
 
 The modeline is the bottom status bar that appears in Emacs windows.  While you can create your own custom modeline, why go to the trouble when Doom Emacs already has a nice modeline package available.  For more information on what is available to configure in the Doom modeline, check out: [[https://github.com/seagle0128/doom-modeline][Doom Modeline]]
@@ -563,7 +574,7 @@ Neotree is a file tree viewer.  When you open neotree, it jumps to the current f
   :config
   (setq neo-smart-open t
         neo-show-hidden-files t
-        neo-window-width 55
+        neo-window-width 30
         neo-window-fixed-size nil
         inhibit-compacting-font-caches t
         projectile-switch-project-action 'neotree-projectile-action) 
@@ -606,14 +617,16 @@ Removes "Ind" from showing in the modeline.
 
 ** Org Level Headers
 #+begin_src emacs-lisp
-  (custom-set-faces
-   '(org-level-1 ((t (:inherit outline-1 :height 1.4))))
-   '(org-level-2 ((t (:inherit outline-2 :height 1.3))))
-   '(org-level-3 ((t (:inherit outline-3 :height 1.25))))
-   '(org-level-4 ((t (:inherit outline-4 :height 1.2))))
-   '(org-level-5 ((t (:inherit outline-5 :height 1.15))))
-   '(org-level-6 ((t (:inherit outline-5 :height 1.1))))
-   '(org-level-7 ((t (:inherit outline-5 :height 1.05)))))
+(defun my/org-mode-hook ()
+  "Stop the org-level headers from increasing in height relative to the other text."
+  (dolist (face '(org-level-1
+                  org-level-2
+                  org-level-3
+                  org-level-4
+                  org-level-5))
+  (set-face-attribute face nil :weight 'semi-bold :height 1.0)))
+
+(add-hook 'org-mode-hook #'my/org-mode-hook)
 #+end_src
 
 ** Source Code Block Tag Expansion
@@ -804,6 +817,41 @@ Vterm is a terminal emulator within Emacs.  The 'shell-file-name' setting sets t
 
 #+end_src
 
+* TABS
+** TODO investigate using this
+#+begin_example
+
+(use-package centaur-tabs
+  :ensure t
+  :demand
+  :config
+  (centaur-tabs-mode t)
+  (centaur-tabs-headline-match)
+  (setq centaur-tabs-height 32
+	centaur-tabs-set-icons t
+	centaur-tabs-gray-out-icons 'buffer
+	centaur-tabs-set-bar 'under
+	centaur-tabs-cycle-scope 'tabs)
+  (defun centaur-tabs-buffer-groups ()
+    "Use as few groups as possible."
+      (list (cond ((string-equal "*" (substring (buffer-name) 0 1))
+                   (cond ((string-equal "eglot" (downcase (substring (buffer-name) 1 6)))
+                          "Eglot")
+                         (t
+                          "Tools")))
+                  ((string-equal "magit" (downcase (substring (buffer-name) 0 5)))
+                   "Magit")
+                  (t
+                   "Default"))))
+  :bind
+  ("C-<prior>" . centaur-tabs-backward)
+  ("C-<next>" . centaur-tabs-forward)
+  (:map evil-normal-state-map
+        ("g t" . centaur-tabs-forward)
+        ("g T" . centaur-tabs-backward))
+  )
+
+#+end_example
 * THEMES
 
 The first line below designates the directory where will place all of our custom-made themes, which I have created only one (dtmacs).  You can create your own Emacs themes with the help of the [[https://emacsfodder.github.io/emacs-theme-editor/][Emacs Theme Editor]].  I am also installing =doom-themes= because it contains a huge collection of themes.  M-x load-theme will list all of the themes available.
@@ -820,8 +868,10 @@ The first line below designates the directory where will place all of our custom
   ;;(load-theme 'doom-one t) ;; default
   (let ((hour (string-to-number (format-time-string "%H"))))
     (if (and (>= hour 6) (< hour 18)) ;; if the time is between 6 and 18
-        (load-theme 'doom-gruvbox-light t) ;; load the light theme
-      (load-theme 'doom-gruvbox t))) ;; otherwise load the dark theme
+        ;;(load-theme 'doom-gruvbox-light t) ;; load the light theme
+        (load-theme 'doom-bluloco-light t) ;; load the light theme
+      ;;(load-theme 'doom-gruvbox t))) ;; otherwise load the dark theme
+      (load-theme 'doom-bluloco-dark t))) ;; otherwise load the dark theme
   ;;(load-theme 'doom-solarized-light t)
   ;; Enable custom neotree theme (alj-the-icons must be installed!)
   (doom-themes-neotree-config)

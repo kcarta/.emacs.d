@@ -113,29 +113,23 @@
 (with-eval-after-load 'evil-maps
   (define-key evil-motion-state-map (kbd "SPC") nil)
   (define-key evil-motion-state-map (kbd "RET") nil)
+  ;; TODO figure out how to get this to not 
+  ;;(define-key evil-normal-state-map (kbd "RET") (lambda () (interactive) (next-line)))
   (define-key evil-motion-state-map (kbd "TAB") nil))
-;; Setting RETURN key in org-mode to follow links
-  (setq org-return-follows-link  t)
+(setq org-return-follows-link t)
 
 (use-package all-the-icons
     :ensure t
     :if (display-graphic-p))
 
 (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
-  ;;(use-package all-the-icons-dired
-    ;;:hook (dired-mode . (lambda () (all-the-icons-dired-mode t))))
+  (use-package all-the-icons-dired
+    :ensure t
+    :hook (dired-mode . (lambda () (all-the-icons-dired-mode t))))
 
 (set-face-attribute 'default nil
   :font "Fira Code"
-  :height 140
-  :weight 'regular)
-(set-face-attribute 'variable-pitch nil
-  :font "Fira Sans"
-  :height 150
-  :weight 'medium)
-(set-face-attribute 'fixed-pitch nil
-  :font "Fira Code"
-  :height 140
+  :height 160
   :weight 'regular)
 ;; Makes commented text and keywords italics.
 ;; This is working in emacsclient but not emacs.
@@ -148,10 +142,10 @@
 ;; This sets the default font on all graphical frames created after restarting Emacs.
 ;; Does the same thing as 'set-face-attribute default' above, but emacsclient fonts
 ;; are not right unless I also add this method of setting the default font.
-(add-to-list 'default-frame-alist '(font . "Fira Code-14"))
+(add-to-list 'default-frame-alist '(font . "Fira Code-16"))
 
 ;; Uncomment the following line if line spacing needs adjusting.
-(setq-default line-spacing 0.12)
+;;(setq-default line-spacing 0.12)
 
 (menu-bar-mode -1)
 (tool-bar-mode -1)
@@ -170,6 +164,7 @@
 (delete-selection-mode 1)    ;; You can select text and delete it by typing.
 (electric-indent-mode 1)    ;; Turn off the weird indenting that Emacs does by default.
 (org-indent-mode 1)
+(setq truncate-lines nil)
 (electric-pair-mode 1)       ;; Turns on automatic parens pairing
 ;; The following prevents <> from auto-pairing when electric-pair-mode is on.
 ;; Otherwise, org-tempo is broken when you try to <s TAB...
@@ -282,6 +277,7 @@
 
   (kc/leader-keys
     "g" '(:ignore t :wk "Go")
+    "g a" '(org-open-at-point :wk "Open link under cursor")
     ;; These are copies of keybindings in spc w
     ;; But this is so deep in my muscle memory it's better than retraining
     ;; Window motions
@@ -374,12 +370,23 @@
     "w H" '(buf-move-left :wk "Buffer move left")
     "w J" '(buf-move-down :wk "Buffer move down")
     "w K" '(buf-move-up :wk "Buffer move up")
-    "w L" '(buf-move-right :wk "Buffer move right"))
+    "w L" '(buf-move-right :wk "Buffer move right")
+    ;; Tabs
+    ;;"w t" '(:ignore t :wk "Tabs")
+    ;;"w t n" '(centaur-tabs--create-new-tab :wk "Create new tab (Centaur)")
+    ;;"w t c" '(centaur-tabs--kill-this-buffer-dont-ask :wk "Close the tab/buffer (Centaur)")
+    )
 
   ;; end parans
   )
 
 (use-package ruby-mode)
+
+(use-package markdown-mode
+  :ensure t
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode))
+  :init (setq markdown-command "/usr/local/bin/multimarkdown"))
 
 (use-package doom-modeline
   :ensure t
@@ -395,7 +402,7 @@
   :config
   (setq neo-smart-open t
         neo-show-hidden-files t
-        neo-window-width 55
+        neo-window-width 30
         neo-window-fixed-size nil
         inhibit-compacting-font-caches t
         projectile-switch-project-action 'neotree-projectile-action) 
@@ -420,14 +427,16 @@
 
 ;;(eval-after-load 'org-indent '(diminish 'org-indent-mode))
 
-(custom-set-faces
- '(org-level-1 ((t (:inherit outline-1 :height 1.4))))
- '(org-level-2 ((t (:inherit outline-2 :height 1.3))))
- '(org-level-3 ((t (:inherit outline-3 :height 1.25))))
- '(org-level-4 ((t (:inherit outline-4 :height 1.2))))
- '(org-level-5 ((t (:inherit outline-5 :height 1.15))))
- '(org-level-6 ((t (:inherit outline-5 :height 1.1))))
- '(org-level-7 ((t (:inherit outline-5 :height 1.05)))))
+(defun my/org-mode-hook ()
+  "Stop the org-level headers from increasing in height relative to the other text."
+  (dolist (face '(org-level-1
+                  org-level-2
+                  org-level-3
+                  org-level-4
+                  org-level-5))
+  (set-face-attribute face nil :weight 'semi-bold :height 1.0)))
+
+(add-hook 'org-mode-hook #'my/org-mode-hook)
 
 (require 'org-tempo)
 
@@ -566,8 +575,10 @@
   ;;(load-theme 'doom-one t) ;; default
   (let ((hour (string-to-number (format-time-string "%H"))))
     (if (and (>= hour 6) (< hour 18)) ;; if the time is between 6 and 18
-        (load-theme 'doom-gruvbox-light t) ;; load the light theme
-      (load-theme 'doom-gruvbox t))) ;; otherwise load the dark theme
+        ;;(load-theme 'doom-gruvbox-light t) ;; load the light theme
+        (load-theme 'doom-bluloco-light t) ;; load the light theme
+      ;;(load-theme 'doom-gruvbox t))) ;; otherwise load the dark theme
+      (load-theme 'doom-bluloco-dark t))) ;; otherwise load the dark theme
   ;;(load-theme 'doom-solarized-light t)
   ;; Enable custom neotree theme (alj-the-icons must be installed!)
   (doom-themes-neotree-config)
