@@ -3,6 +3,12 @@
 (require 'elpaca-setup)  ;; The Elpaca Package Manager
 (require 'buffer-move)   ;; Buffer-move for better window management
 
+(use-package chatgpt-shell
+  :ensure t
+  :config
+  (setq chatgpt-shell-openai-key (getenv "OPENAI_API_KEY"))
+  )
+
 (setq backup-directory-alist '((".*" . "~/.emacs.d/archive/")))
 (setq auto-save-file-name-transforms `((".*" "~/.emacs.d/archive/" t)))
 
@@ -488,6 +494,14 @@
   (elfeed-goodies/setup)
   :config
   (setq elfeed-goodies/entry-pane-size 0.5))
+
+(use-package exec-path-from-shell
+  :ensure t
+  :config
+  (setq exec-path-from-shell-arguments '("-l"))
+  (exec-path-from-shell-initialize)
+  (exec-path-from-shell-copy-env "PATH")
+  (exec-path-from-shell-copy-env "OPENAI_API_KEY"))
 
 (use-package eshell-toggle
   :ensure t

@@ -11,6 +11,7 @@ Based on: https://gitlab.com/dwt1/configuring-emacs
 - [[#important-programs-to-load-first][IMPORTANT PROGRAMS TO LOAD FIRST]]
   - [[#adding-the-scripts-directory-to-path][Adding the scripts directory to path]]
   - [[#sourcing-the-scripts][Sourcing the scripts]]
+- [[#ai][AI]]
 - [[#backup][BACKUP]]
 - [[#completions][COMPLETIONS]]
   - [[#company][Company]]
@@ -43,6 +44,7 @@ Based on: https://gitlab.com/dwt1/configuring-emacs
 - [[#rainbow-delimiters][RAINBOW DELIMITERS]]
 - [[#rss][RSS]]
 - [[#shells-and-terminals][SHELLS AND TERMINALS]]
+  - [[#path--env][PATH & ENV]]
   - [[#eshell][Eshell]]
   - [[#vterm][Vterm]]
   - [[#vterm-toggle][Vterm-Toggle]]
@@ -64,6 +66,14 @@ To keep this =config.org= a reasonable length, I have moved a lot of code to ind
 (require 'buffer-move)   ;; Buffer-move for better window management
 #+end_src
 
+* AI
+#+begin_src emacs-lisp
+(use-package chatgpt-shell
+  :ensure t
+  :config
+  (setq chatgpt-shell-openai-key (getenv "OPENAI_API_KEY"))
+  )
+#+end_src
 * BACKUP
 
 By default, Emacs creates automatic backups of files in their original directories, such "file.el" and the backup "file.el~".  This leads to a lot of clutter, so let's tell Emacs to put all backups that it creates in an archive directory.
@@ -716,6 +726,16 @@ Adding rainbow coloring to parentheses.
 #+end_src
 
 * SHELLS AND TERMINALS
+** PATH & ENV
+#+begin_src emacs-lisp
+(use-package exec-path-from-shell
+  :ensure t
+  :config
+  (setq exec-path-from-shell-arguments '("-l"))
+  (exec-path-from-shell-initialize)
+  (exec-path-from-shell-copy-env "PATH")
+  (exec-path-from-shell-copy-env "OPENAI_API_KEY"))
+#+end_src
 ** Eshell
 Eshell is an Emacs 'shell' that is written in Elisp.
 
