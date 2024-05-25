@@ -13,7 +13,7 @@
 (setq auto-save-file-name-transforms `((".*" "~/.emacs.d/archive/" t)))
 
 (use-package company
-  :defer 2
+  :ensure t
   :diminish
   :custom
   (company-begin-commands '(self-insert-command))
@@ -25,6 +25,7 @@
 
 (use-package company-box
   :after company
+  :ensure t
   :diminish
   :hook (company-mode . company-box-mode))
 
@@ -37,10 +38,6 @@
     (setq ivy-initial-inputs-alist nil)) ;; removes starting ^ regex in M-x
 
 (use-package ivy
-  :bind
-  ;; ivy-resume resumes the last Ivy-based completion.
-  (("C-c C-r" . ivy-resume)
-   ("C-x B" . ivy-switch-buffer-other-window))
   :diminish
   :ensure t
   :custom
@@ -88,16 +85,6 @@
   (dashboard-setup-startup-hook))
 
 (use-package diminish :ensure t)
-
-(use-package peep-dired
-  :after dired
-  :hook (evil-normalize-keymaps . peep-dired-hook)
-  :config
-   (evil-define-key 'normal dired-mode-map (kbd "h") 'dired-up-directory)
-    (evil-define-key 'normal dired-mode-map (kbd "l") 'dired-open-file) ; use dired-find-file instead if not using dired-open package
-    (evil-define-key 'normal peep-dired-mode-map (kbd "j") 'peep-dired-next-file)
-    (evil-define-key 'normal peep-dired-mode-map (kbd "k") 'peep-dired-prev-file)
-)
 
 (use-package evil 
     :ensure t 
@@ -173,18 +160,16 @@
 (electric-indent-mode 1)    ;; Turn off the weird indenting that Emacs does by default.
 (org-indent-mode 1)
 (setq truncate-lines nil)
-(electric-pair-mode 1)       ;; Turns on automatic parens pairing
-;; The following prevents <> from auto-pairing when electric-pair-mode is on.
-;; Otherwise, org-tempo is broken when you try to <s TAB...
-(add-hook 'org-mode-hook (lambda ()
-			   (setq-local electric-pair-inhibit-predicate
-				       `(lambda (c)
-					  (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))))
 (global-auto-revert-mode t)  ;; Automatically show changes if the file has changed
 (setq org-edit-src-content-indentation 0) ;; Set src block automatic indent to 0 instead of 2.
 
+(electric-pair-mode 1)       ;; Turns on automatic parens pairing
+(add-hook 'org-mode-hook (lambda ()
+           (setq-local electric-pair-inhibit-predicate
+                   `(lambda (c)
+                  (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))))
+
 ;; Window rules
-(setq display-buffer-alist ;; Setting window rules
 (setq display-buffer-alist
       '(("\\*messages.*"
          (display-buffer-in-side-window)
@@ -197,7 +182,7 @@
         ("\\*warnings.*"
          (display-buffer-in-side-window)
          (window-height . 0.15)
-         (side . bottom))))      )
+         (side . bottom))))
 
 ;; Disable the direct option modifier, freeing up the macOS option key
 (if (boundp 'ns-option-modifier)
@@ -402,9 +387,8 @@
         doom-modeline-bar-width 5    ;; sets right bar width
         doom-modeline-buffer-encoding nil  ;; sets buffer encoding
         doom-modeline-modal nil ;; sets the buffer state icon
-        doom-modeline-total-line-number nil ;; sets the buffer state icon
-        doom-modeline-persp-name t   ;; adds perspective name to modeline
-        doom-modeline-persp-icon t)) ;; adds folder icon next to persp name
+	)
+  ) ;; adds folder icon next to persp name
 
 (use-package neotree
   :ensure t
@@ -434,8 +418,6 @@
 (use-package org-bullets :ensure t)
 (add-hook 'org-mode-hook 'org-bullets-mode)
 
-;;(eval-after-load 'org-indent '(diminish 'org-indent-mode))
-
 (defun my/org-mode-hook ()
   "Stop the org-level headers from increasing in height relative to the other text."
   (dolist (face '(org-level-1
@@ -448,44 +430,6 @@
 (add-hook 'org-mode-hook #'my/org-mode-hook)
 
 (require 'org-tempo)
-
-(defun org-image-resize (frame size)
-  (when (derived-mode-p 'org-mode)
-    (if (< (window-total-width) 80)
-        (setq org-image-actual-width (window-pixel-width))
-      (setq org-image-actual-width (* 80 (window-font-width))))
-    (org-redisplay-inline-images)))
-
-(add-hook 'window-size-change-functions 'org-image-resize)
-
-(defun my/org-toggle-inline-images-advice (orig-fun &rest args)
-  (apply orig-fun args)
-  (org-image-resize (selected-frame) nil))  ; Adjusted to pass two arguments
-
-(advice-add 'org-toggle-inline-images :around #'my/org-toggle-inline-images-advice)
-
-(use-package perspective
-  :ensure t
-  :custom
-  ;; NOTE! I have also set 'SCP =' to open the perspective menu.
-  ;; I'm only setting the additional binding because setting it
-  ;; helps suppress an annoying warning message.
-  (persp-mode-prefix-key (kbd "C-c M-p"))
-  :init 
-  (persp-mode)
-  :config
-  ;; Sets a file to write to when we save states
-  (setq persp-state-default-file "~/.emacs.d/sessions"))
-
-;; This will group buffers by persp-name in ibuffer.
-(add-hook 'ibuffer-hook
-          (lambda ()
-            (persp-ibuffer-set-filter-groups)
-            (unless (eq ibuffer-sorting-mode 'alphabetic)
-              (ibuffer-do-sort-by-alphabetic))))
-
-;; Automatically save perspective states to file when Emacs exits.
-(add-hook 'kill-emacs-hook #'persp-state-save)
 
 (use-package projectile
   :ensure t

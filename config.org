@@ -17,7 +17,6 @@ Based on: https://gitlab.com/dwt1/configuring-emacs
   - [[#ivy-counsel][Ivy (Counsel)]]
 - [[#dashboard][DASHBOARD]]
 - [[#diminish][DIMINISH]]
-- [[#dired][DIRED]]
 - [[#evil][EVIL]]
 - [[#icons][ICONS]]
 - [[#fonts][FONTS]]
@@ -35,7 +34,6 @@ Based on: https://gitlab.com/dwt1/configuring-emacs
 - [[#org-mode][ORG MODE]]
   - [[#enabling-table-of-contents][Enabling Table of Contents]]
   - [[#enabling-org-bullets][Enabling Org Bullets]]
-  - [[#diminish-org-indent-mode][Diminish Org Indent Mode]]
   - [[#org-level-headers][Org Level Headers]]
   - [[#source-code-block-tag-expansion][Source Code Block Tag Expansion]]
   - [[#images][Images]]
@@ -87,21 +85,22 @@ By default, Emacs creates automatic backups of files in their original directori
 [[https://company-mode.github.io/][Company]] is a text completion framework for Emacs. The name stands for "complete anything".  Completion will start automatically after you type a few letters. Use M-n and M-p to select, <return> to complete or <tab> to complete the common part.
 
 #+begin_src emacs-lisp
-  (use-package company
-    :defer 2
-    :diminish
-    :custom
-    (company-begin-commands '(self-insert-command))
-    (company-idle-delay .1)
-    (company-minimum-prefix-length 2)
-    (company-show-numbers t)
-    (company-tooltip-align-annotations 't)
-    (global-company-mode t))
+(use-package company
+  :ensure t
+  :diminish
+  :custom
+  (company-begin-commands '(self-insert-command))
+  (company-idle-delay .1)
+  (company-minimum-prefix-length 2)
+  (company-show-numbers t)
+  (company-tooltip-align-annotations 't)
+  (global-company-mode t))
 
-  (use-package company-box
-    :after company
-    :diminish
-    :hook (company-mode . company-box-mode))
+(use-package company-box
+  :after company
+  :ensure t
+  :diminish
+  :hook (company-mode . company-box-mode))
 #+end_src
 
 ** Ivy (Counsel)
@@ -119,10 +118,6 @@ By default, Emacs creates automatic backups of files in their original directori
       (setq ivy-initial-inputs-alist nil)) ;; removes starting ^ regex in M-x
 
   (use-package ivy
-    :bind
-    ;; ivy-resume resumes the last Ivy-based completion.
-    (("C-c C-r" . ivy-resume)
-     ("C-x B" . ivy-switch-buffer-other-window))
     :diminish
     :ensure t
     :custom
@@ -182,20 +177,6 @@ This package implements hiding or abbreviation of the modeline displays (lighter
 
 #+begin_src emacs-lisp
 (use-package diminish :ensure t)
-#+end_src
-
-* DIRED
-
-#+begin_src emacs-lisp
-(use-package peep-dired
-  :after dired
-  :hook (evil-normalize-keymaps . peep-dired-hook)
-  :config
-   (evil-define-key 'normal dired-mode-map (kbd "h") 'dired-up-directory)
-    (evil-define-key 'normal dired-mode-map (kbd "l") 'dired-open-file) ; use dired-find-file instead if not using dired-open package
-    (evil-define-key 'normal peep-dired-mode-map (kbd "j") 'peep-dired-next-file)
-    (evil-define-key 'normal peep-dired-mode-map (kbd "k") 'peep-dired-prev-file)
-)
 #+end_src
 
 * EVIL
@@ -311,18 +292,16 @@ By default, Emacs requires you to hit ESC three times to escape quit the minibuf
 (electric-indent-mode 1)    ;; Turn off the weird indenting that Emacs does by default.
 (org-indent-mode 1)
 (setq truncate-lines nil)
-(electric-pair-mode 1)       ;; Turns on automatic parens pairing
-;; The following prevents <> from auto-pairing when electric-pair-mode is on.
-;; Otherwise, org-tempo is broken when you try to <s TAB...
-(add-hook 'org-mode-hook (lambda ()
-			   (setq-local electric-pair-inhibit-predicate
-				       `(lambda (c)
-					  (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))))
 (global-auto-revert-mode t)  ;; Automatically show changes if the file has changed
 (setq org-edit-src-content-indentation 0) ;; Set src block automatic indent to 0 instead of 2.
 
+(electric-pair-mode 1)       ;; Turns on automatic parens pairing
+(add-hook 'org-mode-hook (lambda ()
+           (setq-local electric-pair-inhibit-predicate
+                   `(lambda (c)
+                  (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))))
+
 ;; Window rules
-(setq display-buffer-alist ;; Setting window rules
 (setq display-buffer-alist
       '(("\\*messages.*"
          (display-buffer-in-side-window)
@@ -335,7 +314,7 @@ By default, Emacs requires you to hit ESC three times to escape quit the minibuf
         ("\\*warnings.*"
          (display-buffer-in-side-window)
          (window-height . 0.15)
-         (side . bottom))))      )
+         (side . bottom))))
 
 #+end_src
 
@@ -613,13 +592,6 @@ Org-bullets gives us attractive bullets rather than asterisks.
   (add-hook 'org-mode-hook 'org-bullets-mode)
 #+end_src
 
-** Diminish Org Indent Mode
-Removes "Ind" from showing in the modeline.
-
-#+begin_src emacs-lisp
-;;(eval-after-load 'org-indent '(diminish 'org-indent-mode))
-#+end_src
-
 ** Org Level Headers
 #+begin_src emacs-lisp
 (defun my/org-mode-hook ()
@@ -655,23 +627,15 @@ Org-tempo is not a separate package but a module within org that can be enabled.
 #+end_src
 
 ** Images
-#+begin_src elisp
-(defun org-image-resize (frame size)
-  (when (derived-mode-p 'org-mode)
-    (if (< (window-total-width) 80)
-        (setq org-image-actual-width (window-pixel-width))
-      (setq org-image-actual-width (* 80 (window-font-width))))
-    (org-redisplay-inline-images)))
 
-(add-hook 'window-size-change-functions 'org-image-resize)
-
+#+begin_example elisp
 (defun my/org-toggle-inline-images-advice (orig-fun &rest args)
   (apply orig-fun args)
   (org-image-resize (selected-frame) nil))  ; Adjusted to pass two arguments
 
 (advice-add 'org-toggle-inline-images :around #'my/org-toggle-inline-images-advice)
 
-#+end_src
+#+end_example
 * PROJECTILE
 
 [[https://github.com/bbatsov/projectile][Projectile]] is a project interaction library for Emacs.
