@@ -39,10 +39,9 @@ Based on: https://gitlab.com/dwt1/configuring-emacs
   - [[#org-level-headers][Org Level Headers]]
   - [[#source-code-block-tag-expansion][Source Code Block Tag Expansion]]
   - [[#images][Images]]
-- [[#perspective][PERSPECTIVE]]
 - [[#projectile][PROJECTILE]]
 - [[#rainbow-delimiters][RAINBOW DELIMITERS]]
-- [[#rss-elfeed][RSS (Elfeed)]]
+- [[#rss-elfeed][RSS (ELFEED)]]
 - [[#shells-and-terminals][SHELLS AND TERMINALS]]
   - [[#path--env][PATH & ENV]]
   - [[#eshell][Eshell]]
@@ -562,8 +561,8 @@ The modeline is the bottom status bar that appears in Emacs windows.  While you 
         doom-modeline-bar-width 5    ;; sets right bar width
         doom-modeline-buffer-encoding nil  ;; sets buffer encoding
         doom-modeline-modal nil ;; sets the buffer state icon
-        doom-modeline-persp-name t   ;; adds perspective name to modeline
-        doom-modeline-persp-icon t)) ;; adds folder icon next to persp name
+	)
+  ) ;; adds folder icon next to persp name
 #+end_src
 
 * NEOTREE FILE VIEWER
@@ -673,35 +672,6 @@ Org-tempo is not a separate package but a module within org that can be enabled.
 (advice-add 'org-toggle-inline-images :around #'my/org-toggle-inline-images-advice)
 
 #+end_src
-* PERSPECTIVE
-[[https://github.com/nex3/perspective-el][Perspective]] provides multiple named workspaces (or "perspectives") in Emacs, similar to multiple desktops in window managers.  Each perspective has its own buffer list and its own window layout, along with some other isolated niceties, like the [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Xref.html][xref]] ring.
-
-#+begin_src emacs-lisp
-  (use-package perspective
-    :ensure t
-    :custom
-    ;; NOTE! I have also set 'SCP =' to open the perspective menu.
-    ;; I'm only setting the additional binding because setting it
-    ;; helps suppress an annoying warning message.
-    (persp-mode-prefix-key (kbd "C-c M-p"))
-    :init 
-    (persp-mode)
-    :config
-    ;; Sets a file to write to when we save states
-    (setq persp-state-default-file "~/.emacs.d/sessions"))
-
-  ;; This will group buffers by persp-name in ibuffer.
-  (add-hook 'ibuffer-hook
-            (lambda ()
-              (persp-ibuffer-set-filter-groups)
-              (unless (eq ibuffer-sorting-mode 'alphabetic)
-                (ibuffer-do-sort-by-alphabetic))))
-
-  ;; Automatically save perspective states to file when Emacs exits.
-  (add-hook 'kill-emacs-hook #'persp-state-save)
-
-#+end_src
-
 * PROJECTILE
 
 [[https://github.com/bbatsov/projectile][Projectile]] is a project interaction library for Emacs.
@@ -723,7 +693,7 @@ Adding rainbow coloring to parentheses.
          (clojure-mode . rainbow-delimiters-mode)))
 #+end_src
 
-* RSS (Elfeed)
+* RSS (ELFEED)
 
 #+begin_src emacs-lisp
 (use-package elfeed :ensure t

@@ -402,6 +402,7 @@
         doom-modeline-bar-width 5    ;; sets right bar width
         doom-modeline-buffer-encoding nil  ;; sets buffer encoding
         doom-modeline-modal nil ;; sets the buffer state icon
+        doom-modeline-total-line-number nil ;; sets the buffer state icon
         doom-modeline-persp-name t   ;; adds perspective name to modeline
         doom-modeline-persp-icon t)) ;; adds folder icon next to persp name
 
