@@ -40,6 +40,9 @@ Based on: https://gitlab.com/dwt1/configuring-emacs
 - [[#projectile][PROJECTILE]]
 - [[#rainbow-delimiters][RAINBOW DELIMITERS]]
 - [[#rss-elfeed][RSS (ELFEED)]]
+  - [[#elfeed-org][Elfeed-org]]
+  - [[#goodies][Goodies]]
+  - [[#youtube][Youtube]]
 - [[#shells-and-terminals][SHELLS AND TERMINALS]]
   - [[#path--env][PATH & ENV]]
   - [[#eshell][Eshell]]
@@ -664,21 +667,31 @@ Adding rainbow coloring to parentheses.
   :config
   (setq elfeed-search-feed-face ":foreground #ffffff :weight bold"
 	elfeed-search-filter "@2-weeks-ago +unread"
-        elfeed-feeds
-	'(
-	  ("https://www.reddit.com/r/emacs.rss" reddit emacs)
-	  ("https://planet.emacslife.com/atom.xml" emacs )
-	  )
 	)
   )
+#+end_src
 
+** Elfeed-org
+#+begin_src emacs-lisp
+(use-package elfeed-org
+  :ensure t
+  :config
+  (setq rmh-elfeed-org-files (list "~/.emacs.d/feed-config.org"))
+  (elfeed-org))
+#+end_src
+
+** Goodies
+#+begin_example emacs-lisp
 (use-package elfeed-goodies
   :ensure t
   :init
   (elfeed-goodies/setup)
   :config
   (setq elfeed-goodies/entry-pane-size 0.5))
+#+end_src
 
+** Youtube
+#+begin_src emacs-lisp
 (use-package elfeed-tube
   :ensure t
   :after elfeed

@@ -445,20 +445,14 @@
   :config
   (setq elfeed-search-feed-face ":foreground #ffffff :weight bold"
 	elfeed-search-filter "@2-weeks-ago +unread"
-        elfeed-feeds
-	'(
-	  ("https://www.reddit.com/r/emacs.rss" reddit emacs)
-	  ("https://planet.emacslife.com/atom.xml" emacs )
-	  )
 	)
   )
 
-(use-package elfeed-goodies
+(use-package elfeed-org
   :ensure t
-  :init
-  (elfeed-goodies/setup)
   :config
-  (setq elfeed-goodies/entry-pane-size 0.5))
+  (setq rmh-elfeed-org-files (list "~/.emacs.d/feed-config.org"))
+  (elfeed-org))
 
 (use-package elfeed-tube
   :ensure t
