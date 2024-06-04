@@ -10,10 +10,12 @@ Based on: https://gitlab.com/dwt1/configuring-emacs
 - [[#important-programs-to-load-first][IMPORTANT PROGRAMS TO LOAD FIRST]]
   - [[#adding-the-scripts-directory-to-path][Adding the scripts directory to path]]
   - [[#sourcing-the-scripts][Sourcing the scripts]]
+- [[#variables][VARIABLES]]
 - [[#ai][AI]]
 - [[#backup][BACKUP]]
 - [[#completions][COMPLETIONS]]
   - [[#company][Company]]
+  - [[#company-mode-in-org-source-blocks][Company-mode in org source blocks]]
   - [[#ivy-counsel][Ivy (Counsel)]]
 - [[#dashboard][DASHBOARD]]
 - [[#diminish][DIMINISH]]
@@ -66,6 +68,14 @@ To keep this =config.org= a reasonable length, I have moved a lot of code to ind
 (require 'buffer-move)   ;; Buffer-move for better window management
 #+end_src
 
+* VARIABLES
+#+begin_src emacs-lisp
+;; Calendar location
+;; Set to CPH (close enough)
+(setq calendar-latitude 55.6)
+(setq calendar-longitude 12.5)
+(setq calendar-location-name "Copenhagen, DK")
+#+end_src
 * AI
 #+begin_src emacs-lisp
 (use-package chatgpt-shell
@@ -97,7 +107,10 @@ By default, Emacs creates automatic backups of files in their original directori
   (company-minimum-prefix-length 2)
   (company-show-numbers t)
   (company-tooltip-align-annotations 't)
-  (global-company-mode t))
+  (global-company-mode t)
+  )
+;;(add-hook 'after-init-hook 'global-company-mode)
+
 
 (use-package company-box
   :after company
@@ -106,6 +119,16 @@ By default, Emacs creates automatic backups of files in their original directori
   :hook (company-mode . company-box-mode))
 #+end_src
 
+** Company-mode in org source blocks
+#+begin_src emacs-lisp
+(use-package company-org-block
+  :ensure t
+  :custom
+  (company-org-block-edit-style 'auto) ;; 'auto, 'prompt, or 'inline
+  :hook ((org-mode . (lambda ()
+                       (setq-local company-backends '(company-org-block))
+                       (company-mode +1)))))
+#+end_src
 ** Ivy (Counsel)
 + Ivy, a generic completion mechanism for Emacs.
 + Counsel, a collection of Ivy-enhanced versions of common Emacs commands.
@@ -626,7 +649,7 @@ Org-tempo is not a separate package but a module within org that can be enabled.
 | <v                     | '#+BEGIN_VERSE' … '#+END_VERSE'         |
 
 #+begin_src emacs-lisp 
-(require 'org-tempo)
+;;(require 'org-tempo)
 #+end_src
 
 ** Images
@@ -681,13 +704,14 @@ Adding rainbow coloring to parentheses.
 #+end_src
 
 ** Goodies
-#+begin_example emacs-lisp
+#+begin_src emacs-lisp
 (use-package elfeed-goodies
   :ensure t
   :init
   (elfeed-goodies/setup)
   :config
-  (setq elfeed-goodies/entry-pane-size 0.5))
+  (setq elfeed-goodies/entry-pane-position 'top)
+  (setq elfeed-goodies/entry-pane-size 0.75))
 #+end_src
 
 ** Youtube
@@ -802,15 +826,10 @@ Vterm is a terminal emulator within Emacs.  The 'shell-file-name' setting sets t
   :config
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
         doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  ;; Sets the default theme to load!!! 
-  ;;(load-theme 'doom-one t) ;; default
   (let ((hour (string-to-number (format-time-string "%H"))))
     (if (and (>= hour 6) (< hour 18)) ;; if the time is between 6 and 18
-        ;;(load-theme 'doom-gruvbox-light t) ;; load the light theme
         (load-theme 'doom-bluloco-light t) ;; load the light theme
-      ;;(load-theme 'doom-gruvbox t))) ;; otherwise load the dark theme
       (load-theme 'doom-bluloco-dark t))) ;; otherwise load the dark theme
-  ;;(load-theme 'doom-solarized-light t)
   ;; Enable custom neotree theme (alj-the-icons must be installed!)
   (doom-themes-neotree-config)
   ;; Corrects (and improves) org-mode's native fontification.

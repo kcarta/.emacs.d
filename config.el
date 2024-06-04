@@ -3,6 +3,12 @@
 (require 'elpaca-setup)  ;; The Elpaca Package Manager
 (require 'buffer-move)   ;; Buffer-move for better window management
 
+;; Calendar location
+;; Set to CPH (close enough)
+(setq calendar-latitude 55.6)
+(setq calendar-longitude 12.5)
+(setq calendar-location-name "Copenhagen, DK")
+
 (use-package chatgpt-shell
   :ensure t
   :config
@@ -21,13 +27,24 @@
   (company-minimum-prefix-length 2)
   (company-show-numbers t)
   (company-tooltip-align-annotations 't)
-  (global-company-mode t))
+  (global-company-mode t)
+  )
+;;(add-hook 'after-init-hook 'global-company-mode)
+
 
 (use-package company-box
   :after company
   :ensure t
   :diminish
   :hook (company-mode . company-box-mode))
+
+(use-package company-org-block
+  :ensure t
+  :custom
+  (company-org-block-edit-style 'auto) ;; 'auto, 'prompt, or 'inline
+  :hook ((org-mode . (lambda ()
+                       (setq-local company-backends '(company-org-block))
+                       (company-mode +1)))))
 
 (use-package counsel
   :after ivy
@@ -429,7 +446,7 @@
 
 (add-hook 'org-mode-hook #'my/org-mode-hook)
 
-(require 'org-tempo)
+;;(require 'org-tempo)
 
 (use-package projectile
   :ensure t
@@ -453,6 +470,14 @@
   :config
   (setq rmh-elfeed-org-files (list "~/.emacs.d/feed-config.org"))
   (elfeed-org))
+
+(use-package elfeed-goodies
+  :ensure t
+  :init
+  (elfeed-goodies/setup)
+  :config
+  (setq elfeed-goodies/entry-pane-position 'top)
+  (setq elfeed-goodies/entry-pane-size 0.75))
 
 (use-package elfeed-tube
   :ensure t
@@ -540,15 +565,10 @@
   :config
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
         doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  ;; Sets the default theme to load!!! 
-  ;;(load-theme 'doom-one t) ;; default
   (let ((hour (string-to-number (format-time-string "%H"))))
     (if (and (>= hour 6) (< hour 18)) ;; if the time is between 6 and 18
-        ;;(load-theme 'doom-gruvbox-light t) ;; load the light theme
         (load-theme 'doom-bluloco-light t) ;; load the light theme
-      ;;(load-theme 'doom-gruvbox t))) ;; otherwise load the dark theme
       (load-theme 'doom-bluloco-dark t))) ;; otherwise load the dark theme
-  ;;(load-theme 'doom-solarized-light t)
   ;; Enable custom neotree theme (alj-the-icons must be installed!)
   (doom-themes-neotree-config)
   ;; Corrects (and improves) org-mode's native fontification.
