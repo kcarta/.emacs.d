@@ -44,7 +44,7 @@
 
 (use-package vterm-toggle
   :ensure t
-  :after vterm
+  :after vterm evil
   :config
   ;; When running programs in Vterm and in 'normal' mode, make sure that ESC
   ;; kills the program as it would in most standard terminal programs.
