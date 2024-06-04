@@ -3,9 +3,7 @@
     :commands toc-org-enable
     :init (add-hook 'org-mode-hook 'toc-org-enable))
 
-;(add-hook 'org-mode-hook 'org-indent-mode)
-(use-package org-bullets :ensure t)
-(add-hook 'org-mode-hook 'org-bullets-mode)
+(setq org-startup-indented t)
 
 (defun my/org-mode-hook ()
   "Stop the org-level headers from increasing in height relative to the other text."

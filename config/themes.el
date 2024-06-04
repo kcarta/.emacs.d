@@ -1,3 +1,9 @@
+(use-package idle-highlight-mode
+  :ensure t
+  :config (setq idle-highlight-idle-time 0.2)
+  :hook ((prog-mode text-mode) . idle-highlight-mode))
+
+
 (set-face-attribute 'default nil
   :font "Fira Code"
   :height 160
@@ -70,6 +76,10 @@
         doom-modeline-modal nil ;; sets the buffer state icon
 	)
   ) ;; adds folder icon next to persp name
+
+(use-package casual-dired
+  :ensure t
+  :bind (:map dired-mode-map ("C-o" . #'casual-dired-tmenu)))
 
 (provide 'themes)
 

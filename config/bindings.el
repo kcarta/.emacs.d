@@ -18,9 +18,8 @@
     :global-prefix "M-SPC") ;; access leader in insert mode
   
   (kc/leader-keys
-    "SPC" '(counsel-M-x :wk "Counsel M-x")
+    "SPC" '(execute-extended-command :wk "Consult")
     "." '(find-file :wk "Find file")
-    "=" '(perspective-map :wk "Perspective") ;; Lists all the perspective keybindings
     "TAB TAB" '(comment-line :wk "Comment lines")
     "u" '(universal-argument :wk "Universal argument"))
 
@@ -68,12 +67,9 @@
               (find-file "~/.emacs.d/init.el")) 
             :wk "Open emacs config.org")
     "f d" '(find-grep-dired :wk "Search for string in files in DIR")
-    "f g" '(counsel-grep-or-swiper :wk "Search for string current file")
     "f i" '((lambda () (interactive)
               (find-file "~/.emacs.d/init.el")) 
             :wk "Open emacs init.el")
-    "f l" '(counsel-locate :wk "Locate a file")
-    "f r" '(counsel-recentf :wk "Find recent files")
     )
   
   (kc/leader-keys
@@ -116,12 +112,11 @@
     "h x" '(describe-command :wk "Display full documentation for command"))
   
   (kc/leader-keys
-    "l" '(:ignore t :wk "EvaLuate")    
+    "l" '(:ignore t :wk "Languages")    
+    "l l" '(eglot :wk "Start Eglot")
     "l b" '(eval-buffer :wk "Evaluate elisp in buffer")
     "l d" '(eval-defun :wk "Evaluate defun containing or after point")
-    "l e" '(eval-expression :wk "Evaluate and elisp expression")
-    "l h" '(counsel-esh-history :wk "Eshell history")
-    "l l" '(eval-last-sexp :wk "Evaluate elisp expression before point")
+    "l e" '(eval-expression :wk "Evaluate an elisp expression")
     "l r" '(eval-region :wk "Evaluate elisp in region")
     )
   
@@ -130,15 +125,14 @@
     "o d" '(dashboard-open :wk "Dashboard")
     "o e" '(elfeed :wk "Elfeed RSS")
     "o f" '(make-frame :wk "Open buffer in new frame")
-    "o s" '(eshell :wk "Eshell")
-    "o t" '(vterm-toggle :wk "Open vterm")
+    "o s" '((lambda () (interactive)
+	      (let ((height (truncate (* 0.3 (frame-height)))))
+		(split-window-below (- height))
+		(other-window 1)
+		(eshell)))
+	    :wk "Eshell")
     "o w" '(eww :wk "EWW emacs web wowser")
     "o F" '(select-frame-by-name :wk "Select frame by name"))
-
-  (kc/leader-keys
-  ;; projectile-command-map already has a ton of bindings 
-  ;; set for us, so no need to specify each individually.
-    "p" '(projectile-command-map :wk "Projectile"))
 
   (kc/leader-keys
     "r" '(:ignore t :wk "Org")
@@ -161,7 +155,6 @@
     "t" '(:ignore t :wk "Toggle")
     "t i" '(org-toggle-inline-images :wk "Toggle inline images in org mode")
     "t l" '(display-line-numbers-mode :wk "Toggle line numbers")
-    "t n" '(neotree-toggle :wk "Toggle neotree file viewer")
     "t t" '(visual-line-mode :wk "Toggle truncated lines")
     )
 
