@@ -4,6 +4,7 @@
     :init (add-hook 'org-mode-hook 'toc-org-enable))
 
 (setq org-startup-indented t)
+(setq org-todo-keyword-faces '(("TODO" . "#FF6347") ("CANCELED" . "#A9A9A9") ("DONE" . "#32CD32")))
 
 (defun my/org-mode-hook ()
   "Stop the org-level headers from increasing in height relative to the other text."
