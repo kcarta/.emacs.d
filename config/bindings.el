@@ -30,7 +30,7 @@
     "b C" '(clone-indirect-buffer-other-window :wk "Clone indirect buffer in new window")
     "b d" '(bookmark-delete :wk "Delete bookmark")
     "b l" '(list-bookmarks :wk "List bookmarks")
-    "b m" '( ookmark-set :wk "Set bookmark")
+    "b m" '(bookmark-set :wk "Set bookmark")
     "b w" '(bookmark-save :wk "Save current bookmarks to bookmark file")
     "b i" '(ibuffer :wk "Ibuffer")
     "b k" '(kill-current-buffer :wk "Kill current buffer")
@@ -136,11 +136,8 @@
 
   (kc/leader-keys
     "r" '(:ignore t :wk "Org")
-    "r a" '(org-agenda :wk "Org agenda")
-    "r e" '(org-export-dispatch :wk "Org export dispatch")
-    "r i" '(org-toggle-item :wk "Org toggle item")
-    "r t" '(org-todo :wk "Org todo")
-    "r B" '(org-babel-tangle :wk "Org babel tangle")
+    "r a" '(org-archive-subtree :wk "Org archive (subtree)")
+    "r r" '(org-refile :wk "Org refile")
     "r T" '(org-todo-list :wk "Org todo list"))
 
   (kc/leader-keys

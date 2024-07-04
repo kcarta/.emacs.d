@@ -17,4 +17,8 @@
 
 (add-hook 'org-mode-hook #'my/org-mode-hook)
 
+(setq org-agenda-files '("~/notes"))
+(setq org-refile-use-outline-path 'file)
+(setq org-refile-targets '((org-agenda-files :level . 1)))
+
 (provide 'org-config)
