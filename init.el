@@ -1,7 +1,5 @@
 (add-to-list 'load-path "~/.emacs.d/scripts/")
 (add-to-list 'load-path "~/.emacs.d/config/")
-(add-to-list 'load-path "~/.emacs.d/scripts/")
-(add-to-list 'load-path "~/.emacs.d/config/")
 
 (require 'elpaca-setup)  ; The Elpaca Package Manager
 (require 'buffer-move)   ; Buffer-move for better window management
@@ -13,7 +11,6 @@
 (require 'shells)
 (require 'org-config)
 (require 'lang)
-(require 'feeds)
 
 (use-package transient :ensure t)
 (use-package magit

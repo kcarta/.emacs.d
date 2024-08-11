@@ -51,17 +51,6 @@
     )
 
   (kc/leader-keys
-    "e" '(:ignore t :wk "Elfeed commands")
-    "e b" '(elfeed-search-browse-url :wk "Browse url")
-    "e e" '(elfeed :wk "Open Elfeed")
-    "e g" '(elfeed-search-fetch :wk "Search-fetch")
-    "e G" '(elfeed-search-update--force :wk "Search-update-force")
-    "e r" '(elfeed-search-untag-all-unread :wk "Mark as read")
-    "e s" '(elfeed-search-live-filter :wk "Live filter")
-    "e u" '(elfeed-update :wk "Update elfeed")
-    )
-  
-  (kc/leader-keys
     "f" '(:ignore t :wk "Files and Feeds")    
     "f c" '((lambda () (interactive)
               (find-file "~/.emacs.d/init.el")) 
@@ -123,7 +112,6 @@
   (kc/leader-keys
     "o" '(:ignore t :wk "Open")
     "o d" '(dashboard-open :wk "Dashboard")
-    "o e" '(elfeed :wk "Elfeed RSS")
     "o f" '(make-frame :wk "Open buffer in new frame")
     "o s" '((lambda () (interactive)
 	      (let ((height (truncate (* 0.3 (frame-height)))))
