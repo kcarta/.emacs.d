@@ -128,9 +128,11 @@
 
   (kc/leader-keys
     "r" '(:ignore t :wk "Org")
-    "r a" '(org-archive-subtree :wk "Org archive (subtree)")
-    "r r" '(org-refile :wk "Org refile")
-    "r T" '(org-todo-list :wk "Org todo list"))
+    "r a" '(org-archive-subtree :wk "Archive (subtree)")
+    "r r" '(org-refile :wk "Refile")
+    "r s" '(org-sort :wk "Sort")
+    "r t" '(org-set-tags-command :wk "Set tags")
+    "r T" '(org-todo-list :wk "Todo list"))
 
   (kc/leader-keys
     "r b" '(:ignore t :wk "Tables")
