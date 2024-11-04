@@ -39,7 +39,8 @@
         doom-themes-enable-italic t)
   (let ((hour (string-to-number (format-time-string "%H"))))
     (if (and (>= hour 6) (< hour 18))
-        (load-theme 'doom-bluloco-light t)
+        ;;(load-theme 'doom-bluloco-light t)
+        (load-theme 'doom-bluloco-dark t) ; baby life requires perma-dark mode
       (load-theme 'doom-bluloco-dark t)))
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config))

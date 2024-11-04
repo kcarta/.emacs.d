@@ -13,10 +13,6 @@
 (require 'lang)
 
 (use-package transient :ensure t)
-(use-package magit
-  :ensure t
-  :bind (("C-x g" . magit-status)
-         ("C-x C-g" . magit-status)))
 
 (use-package rg :ensure t)
 
@@ -28,11 +24,9 @@
   (setq dashboard-set-file-icons t)
   (setq dashboard-center-content t)
   (setq dashboard-items '((recents . 5)
-                          (agenda . 5 )
                           ))
   :custom 
-  (dashboard-modify-heading-icons '((recents . "file-text")
-				    (bookmarks . "book")))
+  (dashboard-modify-heading-icons '((recents . "file-text")))
   :config
   (dashboard-setup-startup-hook))
 
