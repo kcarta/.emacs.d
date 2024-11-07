@@ -1,4 +1,3 @@
-
 ;; Enable vertico
 (use-package vertico
   :ensure t
@@ -175,9 +174,9 @@
 (use-package corfu
   :ensure t
   ;; Optional customizations
-  ;; :custom
+  :custom
   ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-  ;; (corfu-auto t)                 ;; Enable auto completion
+  (corfu-auto t)                 ;; Enable auto completion
   ;; (corfu-separator ?\s)          ;; Orderless field separator
   ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
   ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
@@ -228,7 +227,7 @@
   (add-hook 'completion-at-point-functions #'cape-file)
   (add-hook 'completion-at-point-functions #'cape-elisp-block)
   ;;(add-hook 'completion-at-point-functions #'cape-history)
-  ;;(add-hook 'completion-at-point-functions #'cape-keyword)
+  (add-hook 'completion-at-point-functions #'cape-keyword)
   ;;(add-hook 'completion-at-point-functions #'cape-tex)
   ;;(add-hook 'completion-at-point-functions #'cape-sgml)
   ;;(add-hook 'completion-at-point-functions #'cape-rfc1345)
@@ -273,68 +272,6 @@
   ;; Enable indentation+completion using the TAB key.
   ;; `completion-at-point' is often bound to M-TAB.
   (setq tab-always-indent 'complete)
-
-
-
-;; (use-package company
-;;   :ensure t
-;;   :diminish
-;;   :custom
-;;   (company-begin-commands '(self-insert-command))
-;;   (company-idle-delay .1)
-;;   (company-minimum-prefix-length 2)
-;;   (company-show-numbers t)
-;;   (company-tooltip-align-annotations 't)
-;;   (global-company-mode t)
-;;   )
-
-;; (use-package company-box
-;;   :after company
-;;   :ensure t
-;;   :diminish
-;;   :hook (company-mode . company-box-mode))
-
-;; (use-package company-org-block
-;;   :ensure t
-;;   :custom
-;;   (company-org-block-edit-style 'auto) ;; 'auto, 'prompt, or 'inline
-;;   :hook ((org-mode . (lambda ()
-;;                        (setq-local company-backends '(company-org-block))
-;;                        (company-mode +1)))))
-
-;; (use-package counsel
-;;   :after ivy
-;;   :diminish
-;;   :ensure t
-;;   :config 
-;;     (counsel-mode)
-;;     (setq ivy-initial-inputs-alist nil)) ;; removes starting ^ regex in M-x
-
-;; (use-package ivy
-;;   :diminish
-;;   :ensure t
-;;   :custom
-;;   (setq ivy-use-virtual-buffers t)
-;;   (setq ivy-count-format "(%d/%d) ")
-;;   (setq enable-recursive-minibuffers t)
-;;   :config
-;;  (ivy-mode))
-
-;; (use-package all-the-icons-ivy-rich
-;;   :ensure t
-;;   :init (all-the-icons-ivy-rich-mode 1))
-
-;; (use-package ivy-rich
-;;   :after ivy
-;;   :ensure t
-;;   :init (ivy-rich-mode 1) ;; this gets us descriptions in M-x.
-;;   :custom
-;;   (ivy-virtual-abbreviate 'full
-;;    ivy-rich-switch-buffer-align-virtual-buffer t
-;;    ivy-rich-path-style 'abbrev)
-;;   :config
-;;   (ivy-set-display-transformer 'ivy-switch-buffer
-;;                                'ivy-rich-switch-buffer-transformer))
 
 (use-package which-key
   :ensure t
