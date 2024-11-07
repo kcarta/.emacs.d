@@ -78,9 +78,5 @@
 	)
   ) ;; adds folder icon next to persp name
 
-(use-package casual-dired
-  :ensure t
-  :bind (:map dired-mode-map ("C-o" . #'casual-dired-tmenu)))
-
 (provide 'themes)
 

@@ -1,17 +1,8 @@
 (use-package exec-path-from-shell
   :ensure t
   :config
-  (setq exec-path-from-shell-arguments '("-l"))
   (exec-path-from-shell-initialize)
   (exec-path-from-shell-copy-env "PATH")
-  (exec-path-from-shell-copy-env "OPENAI_API_KEY"))
-
-(use-package chatgpt-shell
-  :ensure t
-  :after exec-path-from-shell
-  :config
-  (setq chatgpt-shell-openai-key (getenv "OPENAI_API_KEY"))
-  )
 
 (use-package eshell-toggle
   :ensure t
