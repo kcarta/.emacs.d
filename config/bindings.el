@@ -44,26 +44,21 @@
     )
 
   (kc/leader-keys
-    "d" '(:ignore t :wk "Dired")
-    "d d" '(dired :wk "Open dired")
-    "d j" '(dired-jump :wk "Dired jump to current")
-    "d n" '(neotree-dir :wk "Open directory in neotree")
-    )
-
-  (kc/leader-keys
-    "f" '(:ignore t :wk "Files and Feeds")    
+    "f" '(:ignore t :wk "Files")    
     "f c" '((lambda () (interactive)
               (find-file "~/.emacs.d/init.el")) 
-            :wk "Open emacs config.org")
-    "f d" '(find-grep-dired :wk "Search for string in files in DIR")
-    "f i" '((lambda () (interactive)
-              (find-file "~/.emacs.d/init.el")) 
             :wk "Open emacs init.el")
+    "f d" '(dired-create-directory :wk "Create directory")
+    "f f" '(dired-create-empty-file :wk "Create file")
+    "f n" '(rename-file :wk "Rename (move) file")
+    "f r" '(dired-delete-file :wk "Delete file")
+    "f y" '(copy-file :wk "Copy file")
     )
   
   (kc/leader-keys
     "g" '(:ignore t :wk "Go")
     "g a" '(org-open-at-point :wk "Open link under cursor")
+    "g g" '(rg :wk "Run ripgrep")
     ;; These are copies of keybindings in spc w
     ;; But this is so deep in my muscle memory it's better than retraining
     ;; Window motions
@@ -81,7 +76,6 @@
 
   (kc/leader-keys
     "h" '(:ignore t :wk "Help")
-    "h a" '(counsel-apropos :wk "Apropos")
     "h b" '(describe-bindings :wk "Describe bindings")
     "h c" '(describe-char :wk "Describe character under cursor")
     "h e" '(view-echo-area-messages :wk "View echo area messages")
@@ -90,23 +84,28 @@
     "h i" '(info :wk "Info")
     "h k" '(describe-key :wk "Describe key")
     "h l" '(view-lossage :wk "Display recent keystrokes and the commands run")
-    "h r" '(:ignore t :wk "Reload")
-    "h r r" '((lambda () (interactive)
-		(load-file "~/.emacs.d/init.el")
-		(ignore (elpaca-process-queues)))
-              :wk "Reload emacs config")
     "h t" '(load-theme :wk "Load theme")
     "h v" '(describe-variable :wk "Describe variable")
     "h w" '(where-is :wk "Prints keybinding for command if set")
     "h x" '(describe-command :wk "Display full documentation for command"))
+
+  (kc/leader-keys
+    "e" '(:ignore t :wk "Elisp")
+    "e b" '(eval-buffer :wk "Evaluate elisp in buffer")
+    "e d" '(eval-defun :wk "Evaluate defun containing or after point")
+    "e e" '(eval-expression :wk "Evaluate an elisp expression")
+    "e r" '(eval-region :wk "Evaluate elisp in region"))
   
   (kc/leader-keys
     "l" '(:ignore t :wk "Languages")    
     "l l" '(eglot :wk "Start Eglot")
-    "l b" '(eval-buffer :wk "Evaluate elisp in buffer")
-    "l d" '(eval-defun :wk "Evaluate defun containing or after point")
-    "l e" '(eval-expression :wk "Evaluate an elisp expression")
-    "l r" '(eval-region :wk "Evaluate elisp in region")
+    "l p" '(prettier-prettify :wk "Prettify buffer")
+    )
+
+  (kc/leader-keys
+    "m" '(:ignore t :wk "Markdown")    
+    "m f" '(markdown-insert-footnote :wk "Insert footnote")
+    "m l" '(markdown-insert-link :wk "Insert link")
     )
   
   (kc/leader-keys
@@ -121,6 +120,10 @@
 	    :wk "Eshell")
     "o w" '(eww :wk "EWW emacs web wowser")
     "o F" '(select-frame-by-name :wk "Select frame by name"))
+
+  (kc/leader-keys
+    "p" '(:ignore t :wk "Project")
+    "p f" '(project-find-file :wk "Find file in project"))
 
   (kc/leader-keys
     "r" '(:ignore t :wk "Org")

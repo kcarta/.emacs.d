@@ -1,4 +1,12 @@
 # -*- mode: gitignore; -*-
+
+.cache/
+
+.lsp*
+tree-sitter/
+projects
+
+
 *~
 \#*\#
 /.emacs.desktop
