@@ -26,7 +26,7 @@
   (setq dashboard-center-content t)
   (setq dashboard-items '(
 			  (recents . 5)
-			  (projects . 3)
+			  (projects . 5)
                           ))
   :custom 
   (dashboard-modify-heading-icons '((recents . "file-text")))

@@ -100,6 +100,7 @@
     "l" '(:ignore t :wk "Languages")    
     "l l" '(eglot :wk "Start Eglot")
     "l p" '(prettier-prettify :wk "Prettify buffer")
+    "l s" '(ispell :wk "Spell check")
     )
 
   (kc/leader-keys
