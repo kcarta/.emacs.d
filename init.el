@@ -48,6 +48,7 @@
 	(define-key evil-motion-state-map (kbd "TAB") nil))
       (setq org-return-follows-link t)
       (evil-mode))
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

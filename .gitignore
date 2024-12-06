@@ -1,6 +1,7 @@
 # -*- mode: gitignore; -*-
 
 .cache/
+.dap-breakpoints
 
 .lsp*
 tree-sitter/
