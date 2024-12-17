@@ -13,8 +13,11 @@
 (if (boundp 'ns-option-modifier)
     (setq ns-option-modifier nil))
 
-;; Uncomment the following line if line spacing needs adjusting.
-;;(setq-default line-spacing 0.12)
+;; Right-click shows a context menu instead of doing whatever it did before
+(when (display-graphic-p)
+  (context-menu-mode))
+
+(blink-cursor-mode -1)
 
 (menu-bar-mode -1)
 (tool-bar-mode -1)
@@ -29,15 +32,11 @@
 ;; Disable the audible bell
 (setq ring-bell-function 'ignore)
 
-(global-auto-revert-mode t)
-
-(delete-selection-mode 1)    ;; You can select text and delete it by typing.
-(electric-indent-mode 1)    ;; Turn off the weird indenting that Emacs does by default.
-;(org-indent-mode 1)
 (setq truncate-lines nil)
 (global-auto-revert-mode t)  ;; Automatically show changes if the file has changed
 (setq org-edit-src-content-indentation 0) ;; Set src block automatic indent to 0 instead of 2.
 
+(electric-indent-mode 1)    ;; Turn off the weird indenting that Emacs does by default.
 (electric-pair-mode 1)       ;; Turns on automatic parens pairing
 (add-hook 'org-mode-hook (lambda ()
            (setq-local electric-pair-inhibit-predicate

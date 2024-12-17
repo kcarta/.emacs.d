@@ -1,9 +1,10 @@
 (add-to-list 'load-path "~/.emacs.d/scripts/")
 (add-to-list 'load-path "~/.emacs.d/config/")
 
+;; In scripts/
 (require 'elpaca-setup)  ; The Elpaca Package Manager
-(require 'buffer-move)   ; Buffer-move for better window management
 
+;; In config/
 (require 'variables)
 (require 'bindings)
 (require 'themes)
@@ -12,8 +13,6 @@
 (require 'org-config)
 (require 'projects)
 (require 'lang)
-
-(use-package transient :ensure t)
 
 (use-package rg :ensure t)
 
@@ -24,6 +23,7 @@
   (setq dashboard-set-heading-icons t)
   (setq dashboard-set-file-icons t)
   (setq dashboard-center-content t)
+  (setq dashboard-projects-backend 'projectile)
   (setq dashboard-items '(
 			  (recents . 5)
 			  (projects . 5)
@@ -38,8 +38,6 @@
     :demand t
     :init 
       (setq evil-want-keybinding nil)
-      (setq evil-vsplit-window-right t)
-      (setq evil-split-window-below t)
       (setq evil-auto-indent nil)
       ;; Unmap keys in 'evil-maps, if not done, (setq org-return-follows-link t) will not work
       (with-eval-after-load 'evil-maps

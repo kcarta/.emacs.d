@@ -20,7 +20,6 @@
   (kc/leader-keys
     "SPC" '(execute-extended-command :wk "Consult")
     "." '(find-file :wk "Find file")
-    "TAB TAB" '(comment-line :wk "Comment lines")
     "u" '(universal-argument :wk "Universal argument"))
 
   (kc/leader-keys

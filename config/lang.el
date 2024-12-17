@@ -1,3 +1,6 @@
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+(add-hook 'text-mode-hook 'visual-line-mode)
+
 (use-package prettier
   :ensure t)
 
@@ -11,17 +14,26 @@
   :ensure t
   :hook (dart-mode . lsp))
 
+(use-package treesit
+  :mode (("\\.ts\\'" . typescript-ts-mode)
+	 ("\\.tsx\\'" . tsx-ts-mode)
+	 ))
+
 (setq treesit-language-source-alist
-      '((ruby "https://github.com/tree-sitter/tree-sitter-ruby")))
+      '((ruby "https://github.com/tree-sitter/tree-sitter-ruby")
+	(typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
+	(tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
+))
 
 (setq major-mode-remap-alist
-      '((ruby-mode . ruby-ts-mode)))
+      '((ruby-mode . ruby-ts-mode)
 ;	(js2-mode . js-ts-mode)
-;	(typescript-mode . typescript-ts-mode)
+	(typescript-mode . typescript-ts-mode)
 ;	(json-mode . json-ts-mode)
 ;	(css-mode . css-ts-mode)
 ;	(yaml-mode . yaml-ts-mode)
 ;	(dart-mode . dart-ts-mode)))
+))
 
 ;(use-package robe
   ;:ensure t
@@ -30,7 +42,11 @@
   ;(add-hook 'ruby-ts-mode-hook 'robe-mode))
 
 (with-eval-after-load 'eglot
- (add-to-list 'eglot-server-programs '((ruby-mode ruby-ts-mode) "ruby-lsp")))
+  (add-to-list 'eglot-server-programs
+	       '((ruby-mode ruby-ts-mode) "ruby-lsp")
+	       ((typescript-mode typescript-ts-mode) "typescript-lsp")
+	       )
+  )
 
 (defun jekyll-insert-top-matter ()
   "Insert Jekyll top matter at point."
@@ -95,7 +111,7 @@ tags: []
       (read-string "Alt text: "))))
   
   ;; Insert Markdown image syntax
-  (insert (format "![%s](/static/img/%s)" alt-text filename)))
+  (insert (format "![%s](/static/img/posts/%s)" alt-text filename)))
 
 
 (provide 'lang)
