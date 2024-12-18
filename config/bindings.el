@@ -20,24 +20,19 @@
   (kc/leader-keys
     "SPC" '(execute-extended-command :wk "Consult")
     "." '(find-file :wk "Find file")
-    "u" '(universal-argument :wk "Universal argument"))
+    "g" '(rg :wk "Ripgrep search")
+    )
 
   (kc/leader-keys
     "b" '(:ignore t :wk "Buffers")
     "b b" '(switch-to-buffer :wk "Switch to buffer")
-    "b c" '(clone-indirect-buffer :wk "Create indirect buffer copy in a split")
-    "b C" '(clone-indirect-buffer-other-window :wk "Clone indirect buffer in new window")
     "b d" '(bookmark-delete :wk "Delete bookmark")
     "b l" '(list-bookmarks :wk "List bookmarks")
     "b m" '(bookmark-set :wk "Set bookmark")
     "b w" '(bookmark-save :wk "Save current bookmarks to bookmark file")
-    "b i" '(ibuffer :wk "Ibuffer")
     "b k" '(kill-current-buffer :wk "Kill current buffer")
-    "b K" '(kill-some-buffers :wk "Kill multiple buffers")
     "b n" '(next-buffer :wk "Next buffer")
     "b p" '(previous-buffer :wk "Previous buffer")
-    "b r" '(revert-buffer :wk "Reload buffer")
-    "b R" '(rename-buffer :wk "Rename buffer")
     "b s" '(basic-save-buffer :wk "Save buffer")
     "b S" '(save-some-buffers :wk "Save multiple buffers")
     )
@@ -47,30 +42,10 @@
     "f c" '((lambda () (interactive)
               (find-file "~/.emacs.d/init.el")) 
             :wk "Open emacs init.el")
-    "f d" '(dired-create-directory :wk "Create directory")
-    "f f" '(dired-create-empty-file :wk "Create file")
+    "f d" '(make-directory :wk "Create directory")
     "f n" '(rename-file :wk "Rename (move) file")
-    "f r" '(dired-delete-file :wk "Delete file")
+    "f r" '(delete-file :wk "Delete file")
     "f y" '(copy-file :wk "Copy file")
-    )
-  
-  (kc/leader-keys
-    "g" '(:ignore t :wk "Go")
-    "g a" '(org-open-at-point :wk "Open link under cursor")
-    "g g" '(rg :wk "Run ripgrep")
-    ;; These are copies of keybindings in spc w
-    ;; But this is so deep in my muscle memory it's better than retraining
-    ;; Window motions
-    "g h" '(evil-window-left :wk "Window left")
-    "g j" '(evil-window-down :wk "Window down")
-    "g k" '(evil-window-up :wk "Window up")
-    "g l" '(evil-window-right :wk "Window right")
-    "g w" '(evil-window-next :wk "Goto next window")
-    ;; Move Windows
-    "g H" '(buf-move-left :wk "Buffer move left")
-    "g J" '(buf-move-down :wk "Buffer move down")
-    "g K" '(buf-move-up :wk "Buffer move up")
-    "g L" '(buf-move-right :wk "Buffer move right")
     )
 
   (kc/leader-keys
@@ -163,11 +138,6 @@
     "w k" '(evil-window-up :wk "Window up")
     "w l" '(evil-window-right :wk "Window right")
     "w w" '(evil-window-next :wk "Goto next window")
-    ;; Move Windows
-    "w H" '(buf-move-left :wk "Buffer move left")
-    "w J" '(buf-move-down :wk "Buffer move down")
-    "w K" '(buf-move-up :wk "Buffer move up")
-    "w L" '(buf-move-right :wk "Buffer move right")
     )
   )
 
