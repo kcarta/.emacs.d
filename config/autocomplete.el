@@ -1,28 +1,16 @@
-;; Enable vertico
+;; Vertico: Completions in the minibuffer.
 (use-package vertico
   :ensure t
   :init
   (vertico-mode)
-
-  ;; Different scroll margin
-  ;; (setq vertico-scroll-margin 0)
-
-  ;; Show more candidates
-  ;; (setq vertico-count 20)
-
-  ;; Grow and shrink the Vertico minibuffer
-  ;; (setq vertico-resize t)
-
-  ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
-  ;; (setq vertico-cycle t)
   )
 
-;; Persist history over Emacs restarts. Vertico sorts by history position.
+;; Savehist: Persist minibuffer history over Emacs restarts. Vertico sorts by history position.
 (use-package savehist
   :init
   (savehist-mode))
 
-;; Optionally use the `orderless' completion style.
+;; Orderless: fuzzy completions in the minibuffer.
 (use-package orderless
   :ensure t
   :init
@@ -33,7 +21,7 @@
         completion-category-defaults nil
         completion-category-overrides '((file (styles partial-completion)))))
 
-;; Enable rich annotations using the Marginalia package
+;; Marginalia: Rich rich annotations in the minibuffer.
 (use-package marginalia
   :ensure t
   ;; Bind `marginalia-cycle' locally in the minibuffer.  To make the binding
@@ -46,10 +34,10 @@
   :init
 
   ;; Marginalia must be activated in the :init section of use-package such that
-  ;; the mode gets enabled right away. Note that this forces loading the
-  ;; package.
+  ;; the mode gets enabled right away. Note that this forces loading the package.
   (marginalia-mode))
 
+;; Consult: Select items from the completions buffer
 (use-package consult
   :ensure t
   ;; Enable automatic preview at point in the *Completions* buffer. This is
@@ -96,27 +84,9 @@
   ;; Optionally configure the narrowing key.
   ;; Both < and C-+ work reasonably well.
   (setq consult-narrow-key "<") ;; "C-+"
-
-  ;; Optionally make narrowing help available in the minibuffer.
-  ;; You may want to use `embark-prefix-help-command' or which-key instead.
-  ;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
-
-  ;; By default `consult-project-function' uses `project-root' from project.el.
-  ;; Optionally configure a different project root function.
-  ;;;; 1. project.el (the default)
-  ;; (setq consult-project-function #'consult--default-project--function)
-  ;;;; 2. vc.el (vc-root-dir)
-  ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
-  ;;;; 3. locate-dominating-file
-  ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
-  ;;;; 4. projectile.el (projectile-project-root)
-  ;; (autoload 'projectile-project-root "projectile")
-  ;; (setq consult-project-function (lambda (_) (projectile-project-root)))
-  ;;;; 5. No project support
-  ;; (setq consult-project-function nil)
 )
 
-
+;; Corfu: Buffer completions.
 (use-package corfu
   :ensure t
   ;; Optional customizations
@@ -142,7 +112,7 @@
   :init
   (global-corfu-mode))
 
-;; Add extensions
+;; Cape: Completion At Point Extensions
 (use-package cape
   :ensure t
   ;; Bind dedicated completion commands
@@ -183,7 +153,7 @@
   ;;(add-hook 'completion-at-point-functions #'cape-line)
 )
 
-;; A few more useful configurations...
+;; A few more useful Minad-stack configurations...
 (use-package emacs
   :init
   ;; vertico
@@ -219,6 +189,7 @@
   ;; `completion-at-point' is often bound to M-TAB.
   (setq tab-always-indent 'complete)
 
+;; which-key: show keybindings in the minibuffer
 (use-package which-key
   :ensure t
   :init
