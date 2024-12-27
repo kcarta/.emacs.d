@@ -14,6 +14,4 @@
   :hook (dired-mode . treemacs-icons-dired-enable-once)
   :ensure t)
 
-;(treemacs-start-on-boot)
-
 (provide 'projects)
