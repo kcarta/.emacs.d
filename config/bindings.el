@@ -2,13 +2,11 @@
 (global-set-key (kbd "C--") 'text-scale-decrease)
 (global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
 (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
-
 (global-set-key [escape] 'keyboard-escape-quit)
 
 (use-package general
   :ensure t
-  :config
-  (general-evil-setup)
+  :config (general-evil-setup)
 
   ;; set up 'SPC' as the global leader key
   (general-create-definer kc/leader-keys
@@ -16,12 +14,11 @@
     :keymaps 'override
     :prefix "SPC" ;; set leader
     :global-prefix "M-SPC") ;; access leader in insert mode
-  
+
   (kc/leader-keys
     "SPC" '(execute-extended-command :wk "Consult")
     "." '(find-file :wk "Find file")
-    "g" '(rg :wk "Ripgrep search")
-    )
+    "g" '(rg :wk "Ripgrep search"))
 
   (kc/leader-keys
     "b" '(:ignore t :wk "Buffers")
@@ -34,19 +31,19 @@
     "b n" '(next-buffer :wk "Next buffer")
     "b p" '(previous-buffer :wk "Previous buffer")
     "b s" '(basic-save-buffer :wk "Save buffer")
-    "b S" '(save-some-buffers :wk "Save multiple buffers")
-    )
+    "b S" '(save-some-buffers :wk "Save multiple buffers"))
 
   (kc/leader-keys
-    "f" '(:ignore t :wk "Files")    
-    "f c" '((lambda () (interactive)
-              (find-file "~/.emacs.d/init.el")) 
-            :wk "Open emacs init.el")
+    "f" '(:ignore t :wk "Files")
+    "f c" '(
+	    (lambda ()
+	      (interactive)
+	      (find-file "~/.emacs.d/init.el")) :wk "Open emacs init.el")
     "f d" '(make-directory :wk "Create directory")
+    "f f" '(project-find-file :wk "Find file in the project")
     "f n" '(rename-file :wk "Rename (move) file")
     "f r" '(delete-file :wk "Delete file")
-    "f y" '(copy-file :wk "Copy file")
-    )
+    "f y" '(copy-file :wk "Copy file"))
 
   (kc/leader-keys
     "h" '(:ignore t :wk "Help")
@@ -69,36 +66,31 @@
     "e d" '(eval-defun :wk "Evaluate defun containing or after point")
     "e e" '(eval-expression :wk "Evaluate an elisp expression")
     "e r" '(eval-region :wk "Evaluate elisp in region"))
-  
-  (kc/leader-keys
-    "l" '(:ignore t :wk "Languages")    
-    "l l" '(eglot :wk "Start Eglot")
-    "l p" '(prettier-prettify :wk "Prettify buffer")
-    "l s" '(ispell :wk "Spell check")
-    )
 
   (kc/leader-keys
-    "m" '(:ignore t :wk "Markdown")    
+    "l" '(:ignore t :wk "Languages")
+    "l l" '(eglot :wk "Start Eglot")
+    "l p" '(prettier-prettify :wk "Prettify buffer")
+    "l s" '(ispell :wk "Spell check"))
+
+  (kc/leader-keys
+    "m" '(:ignore t :wk "Markdown")
     "m f" '(markdown-insert-footnote :wk "Insert footnote")
-    "m l" '(markdown-insert-link :wk "Insert link")
-    )
-  
+    "m l" '(markdown-insert-link :wk "Insert link"))
+
   (kc/leader-keys
     "o" '(:ignore t :wk "Open")
     "o d" '(dashboard-open :wk "Dashboard")
     "o f" '(make-frame :wk "Open buffer in new frame")
-    "o s" '((lambda () (interactive)
-	      (let ((height (truncate (* 0.3 (frame-height)))))
-		(split-window-below (- height))
-		(other-window 1)
-		(eshell)))
-	    :wk "Eshell")
-    "o w" '(eww :wk "EWW emacs web wowser")
+    "o s" '(
+      (lambda ()
+        (interactive)
+        (let ((height (truncate (* 0.3 (frame-height)))))
+          (split-window-below (- height))
+          (other-window 1)
+          (eshell)))
+      :wk "Eshell")
     "o F" '(select-frame-by-name :wk "Select frame by name"))
-
-  (kc/leader-keys
-    "p" '(:ignore t :wk "Project")
-    "p f" '(project-find-file :wk "Find file in project"))
 
   (kc/leader-keys
     "r" '(:ignore t :wk "Org")
@@ -120,8 +112,7 @@
     "t" '(:ignore t :wk "Toggle")
     "t i" '(org-toggle-inline-images :wk "Toggle inline images in org mode")
     "t l" '(display-line-numbers-mode :wk "Toggle line numbers")
-    "t t" '(visual-line-mode :wk "Toggle truncated lines")
-    )
+    "t t" '(visual-line-mode :wk "Toggle truncated lines"))
 
   (kc/leader-keys
     "w" '(:ignore t :wk "Windows")
@@ -133,12 +124,11 @@
     "w s" '(evil-window-split :wk "Horizontal split window")
     "w v" '(evil-window-vsplit :wk "Vertical split window")
     ;; Window motions
+    "w w" '(evil-window-next :wk "Next window")
     "w h" '(evil-window-left :wk "Window left")
     "w j" '(evil-window-down :wk "Window down")
     "w k" '(evil-window-up :wk "Window up")
     "w l" '(evil-window-right :wk "Window right")
-    "w w" '(evil-window-next :wk "Goto next window")
-    )
-  )
+    "w w" '(evil-window-next :wk "Goto next window")))
 
 (provide 'bindings)

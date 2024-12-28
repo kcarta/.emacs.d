@@ -1,10 +1,4 @@
-(use-package treemacs
-  :ensure t
-  :defer t)
-
-(use-package treemacs-evil
-  :after (treemacs evil)
-  :ensure t)
+(use-package treemacs :ensure t :defer t)
 
 (use-package treemacs-projectile
   :after (treemacs projectile)

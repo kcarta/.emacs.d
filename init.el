@@ -1,10 +1,9 @@
-(add-to-list 'load-path "~/.emacs.d/scripts/")
-(add-to-list 'load-path "~/.emacs.d/config/")
-
-;; In scripts/
-(require 'elpaca-setup)  ; The Elpaca Package Manager
+(use-package emacs
+  :init
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t))
 
 ;; In config/
+(add-to-list 'load-path "~/.emacs.d/config/")
 (require 'variables)
 (require 'bindings)
 (require 'themes)
@@ -53,7 +52,9 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("7e377879cbd60c66b88e51fad480b3ab18d60847f31c435f15f5df18bdb18184" "81f53ee9ddd3f8559f94c127c9327d578e264c574cda7c6d9daddaec226f87bb" "88f7ee5594021c60a4a6a1c275614103de8c1435d6d08cc58882f920e0cec65e" default)))
+   '("7e377879cbd60c66b88e51fad480b3ab18d60847f31c435f15f5df18bdb18184" "81f53ee9ddd3f8559f94c127c9327d578e264c574cda7c6d9daddaec226f87bb" "88f7ee5594021c60a4a6a1c275614103de8c1435d6d08cc58882f920e0cec65e" default))
+ '(package-selected-packages
+   '(elisp-autofmt evil dashboard rg lsp-dart markdown-mode json-mode prettier treemacs-icons-dired treemacs-projectile treemacs-evil treemacs toc-org eshell-syntax-highlighting eshell-toggle exec-path-from-shell which-key cape corfu consult marginalia orderless vertico doom-modeline rainbow-delimiters doom-themes all-the-icons-dired all-the-icons idle-highlight-mode general)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
