@@ -69,6 +69,11 @@
     "h x" '(describe-command :wk "Display full documentation for command"))
 
   (kc/leader-keys
+    "h m" '(:ignore t :wk "Manuals")
+    "h m e" '((lambda () (interactive) (info "elisp")) :wk "Elisp Manual") ;; Example: "SPC hE" to open the Elisp manual
+    )
+
+  (kc/leader-keys
     "e" '(:ignore t :wk "Elisp")
     "e b" '(eval-buffer :wk "Evaluate elisp in buffer")
     "e d" '(eval-defun :wk "Evaluate defun containing or after point")

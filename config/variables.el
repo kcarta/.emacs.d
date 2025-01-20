@@ -4,10 +4,10 @@
 (setq auto-save-file-name-transforms
   `((".*" "~/.emacs.d/archive/" t)))
 
-;; Mac option key is M-
+;; Set the Opt key on macOS to function as M-
 (setq mac-option-key-is-meta t)
-; Unbind right option key so it can be used for [] {} on my keyboard
-(setq mac-right-option-modifier nil) 
+;; But free up the right option key for alt
+(setq mac-right-option-modifier nil)
 
 ;; Right-click shows a context menu instead of doing whatever it did before
 (when (display-graphic-p)
