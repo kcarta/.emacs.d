@@ -86,7 +86,7 @@
     "l p" '(prettier-prettify :wk "Prettify buffer")
     "l s" '(ispell :wk "Spell check"))
 
-  (kc/leader-keys
+ (kc/leader-keys
     "m" '(:ignore t :wk "Markdown")
     "m f" '(markdown-insert-footnote :wk "Insert footnote")
     "m l" '(markdown-insert-link :wk "Insert link"))
@@ -114,6 +114,13 @@
     "r T" '(org-todo-list :wk "Todo list"))
 
   (kc/leader-keys
+    "r v" '(:ignore t :wk "Org View Settings")
+    "r v i" '(org-toggle-inline-images :wk "Toggle inline images in org mode")
+    "r v n" '(org-narrow-to-subtree :wk "Narrow to subtree")
+    "r v w" '(widen :wk "Widen")
+    )
+
+  (kc/leader-keys
     "r b" '(:ignore t :wk "Tables")
     "r b -" '(org-table-insert-hline :wk "Insert hline in table"))
 
@@ -122,10 +129,15 @@
     "r d t" '(org-time-stamp :wk "Org time stamp"))
 
   (kc/leader-keys
-    "t" '(:ignore t :wk "Toggle")
-    "t i" '(org-toggle-inline-images :wk "Toggle inline images in org mode")
-    "t l" '(display-line-numbers-mode :wk "Toggle line numbers")
-    "t t" '(visual-line-mode :wk "Toggle truncated lines"))
+    "t" '(:ignore t :wk "Timers")
+    "t s" '(org-timer-start :wk "Start Timer")
+    "t t" '(org-timer-stop :wk "Stop Timer")
+    "t p" '(org-timer-set-timer :wk "Set Timer"))
+
+  (kc/leader-keys
+    "v" '(:ignore t :wk "View")
+    "v l" '(display-line-numbers-mode :wk "Toggle line numbers")
+    "v t" '(visual-line-mode :wk "Toggle truncated lines"))
 
   (kc/leader-keys
     "w" '(:ignore t :wk "Windows")
