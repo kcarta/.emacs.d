@@ -55,7 +55,7 @@
  '(custom-safe-themes
    '("34cf3305b35e3a8132a0b1bdf2c67623bc2cb05b125f8d7d26bd51fd16d547ec" "2078837f21ac3b0cc84167306fa1058e3199bbd12b6d5b56e3777a4125ff6851" "7e377879cbd60c66b88e51fad480b3ab18d60847f31c435f15f5df18bdb18184" "81f53ee9ddd3f8559f94c127c9327d578e264c574cda7c6d9daddaec226f87bb" "88f7ee5594021c60a4a6a1c275614103de8c1435d6d08cc58882f920e0cec65e" default))
  '(package-selected-packages
-   '(gptel org-modern prettier-elisp elisp-autofmt evil dashboard rg lsp-dart markdown-mode json-mode prettier treemacs-icons-dired treemacs-projectile treemacs-evil treemacs toc-org eshell-syntax-highlighting eshell-toggle exec-path-from-shell which-key cape corfu consult marginalia orderless vertico doom-modeline rainbow-delimiters doom-themes all-the-icons-dired all-the-icons idle-highlight-mode general)))
+   '(catppuccin-theme elisa gptel org-modern elisp-autofmt evil dashboard rg lsp-dart markdown-mode json-mode prettier treemacs-icons-dired treemacs-projectile treemacs-evil treemacs toc-org eshell-syntax-highlighting eshell-toggle exec-path-from-shell which-key cape corfu consult marginalia orderless vertico doom-modeline rainbow-delimiters doom-themes all-the-icons-dired all-the-icons idle-highlight-mode general)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
