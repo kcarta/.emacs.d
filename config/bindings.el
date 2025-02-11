@@ -2,7 +2,6 @@
 (global-set-key (kbd "C--") 'text-scale-decrease)
 (global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
 (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
-(global-set-key [escape] 'keyboard-escape-quit)
 
 (use-package general
   :ensure t
@@ -43,10 +42,9 @@
 
   (kc/leader-keys
     "f" '(:ignore t :wk "Files")
-    "f c" '(
-	    (lambda ()
-	      (interactive)
-	      (find-file "~/.emacs.d/init.el")) :wk "Open emacs init.el")
+    "f c" '(lambda ()
+	     (interactive)
+	     (find-file user-init-file) :wk "Open emacs init.el")
     "f d" '(make-directory :wk "Create directory")
     "f f" '(project-find-file :wk "Find file in the project")
     "f n" '(rename-file :wk "Rename (move) file")
@@ -153,7 +151,6 @@
     "w h" '(evil-window-left :wk "Window left")
     "w j" '(evil-window-down :wk "Window down")
     "w k" '(evil-window-up :wk "Window up")
-    "w l" '(evil-window-right :wk "Window right")
-    "w w" '(evil-window-next :wk "Goto next window")))
+    "w l" '(evil-window-right :wk "Window right")))
 
 (provide 'bindings)

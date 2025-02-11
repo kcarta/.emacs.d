@@ -1,11 +1,14 @@
 (use-package exec-path-from-shell
   :ensure t
-  :config
+  :if (display-graphic-p) ;; Only run in GUI mode
+  :init
   (exec-path-from-shell-initialize)
-  (exec-path-from-shell-copy-env "PATH"))
+  :custom
+  (exec-path-from-shell-variables '("PATH" "MANPATH" "SHELL")))
 
 (use-package eshell-toggle
   :ensure t
+  :defer t
   :custom
   (eshell-toggle-size-fraction 3)
   (eshell-toggle-run-command nil)
@@ -13,8 +16,7 @@
 
 (use-package eshell-syntax-highlighting
   :ensure t
-  :after esh-mode
-  :config (eshell-syntax-highlighting-global-mode +1))
+  :hook (eshell-mode . eshell-syntax-highlighting-global-mode))
 
 (setq
   eshell-rc-script (concat user-emacs-directory "eshell/profile")
@@ -24,6 +26,6 @@
   eshell-hist-ignoredups t
   eshell-scroll-to-bottom-on-input t
   eshell-destroy-buffer-when-process-dies t
-  eshell-visual-commands' ("bash" "htop" "ssh" "top" "zsh"))
+  eshell-visual-commands '("bash" "htop" "ssh" "top" "zsh"))
 
 (provide 'shells)

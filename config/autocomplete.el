@@ -1,24 +1,27 @@
 ;; Vertico: Completions in the minibuffer.
-(use-package vertico :ensure t :init (vertico-mode))
+(use-package vertico
+  :ensure t
+  :init (vertico-mode))
 
 ;; Savehist: Persist minibuffer history over Emacs restarts. Vertico sorts by history position.
-(use-package savehist :init (savehist-mode))
+(use-package savehist
+  :init (savehist-mode))
 
 ;; Orderless: fuzzy completions in the minibuffer.
 (use-package orderless
   :ensure t
-  :init
+  :custom
   ;; Configure a custom style dispatcher (see the Consult wiki)
   ;; (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch)
   ;;       orderless-component-separator #'orderless-escapable-split-on-space)
-  (setq
-    completion-styles '(orderless basic)
-    completion-category-defaults nil
-    completion-category-overrides '((file (styles partial-completion)))))
+  (completion-styles '(orderless basic))
+  (completion-category-defaults nil)
+  (completion-category-overrides '((file (styles partial-completion)))))
 
 ;; Marginalia: Rich rich annotations in the minibuffer.
 (use-package marginalia
   :ensure t
+  :defer t
   ;; Bind `marginalia-cycle' locally in the minibuffer.  To make the binding
   ;; available in the *Completions* buffer, add it to the
   ;; `completion-list-mode-map'.
@@ -32,6 +35,7 @@
 ;; Consult: Select items from the completions buffer
 (use-package consult
   :ensure t
+  :defer t
   ;; Enable automatic preview at point in the *Completions* buffer. This is
   ;; relevant when you use the default completion UI.
   :hook (completion-list-mode . consult-preview-at-point-mode)
@@ -109,6 +113,7 @@
 ;; Cape: Completion At Point Extensions
 (use-package cape
   :ensure t
+  :defer t
   ;; Bind dedicated completion commands
   ;; Alternative prefix keys: C-c p, M-p, M-+, ...
   :bind
@@ -191,19 +196,18 @@
 (use-package which-key
   :ensure t
   :init (which-key-mode)
-  :config
-  (setq
-    which-key-side-window-location 'bottom
-    which-key-sort-order #'which-key-key-order-alpha
-    which-key-sort-uppercase-first nil
-    which-key-add-column-padding 1
-    which-key-max-display-columns nil
-    which-key-min-display-lines 6
-    which-key-side-window-slot -10
-    which-key-side-window-max-height 0.25
-    which-key-idle-delay 0.5
-    which-key-max-description-length 25
-    which-key-allow-imprecise-window-fit nil
-    which-key-separator " -> "))
+  :custom
+  (which-key-side-window-location 'bottom)
+  (which-key-sort-order #'which-key-key-order-alpha)
+  (which-key-sort-uppercase-first nil)
+  (which-key-add-column-padding 1)
+  (which-key-max-display-columns nil)
+  (which-key-min-display-lines 6)
+  (which-key-side-window-slot -10)
+  (which-key-side-window-max-height 0.25)
+  (which-key-idle-delay 0.5)
+  (which-key-max-description-length 25)
+  (which-key-allow-imprecise-window-fit nil)
+  (which-key-separator " -> "))
 
 (provide 'autocomplete)

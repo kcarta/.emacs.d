@@ -1,51 +1,40 @@
-;; Backups
-;; By default, Emacs creates automatic backups of files in their original directories, such "file.el" and the backup "file.el~".  This leads to a lot of clutter, so let's tell Emacs to put all backups that it creates in an archive directory.
-(setq backup-directory-alist '((".*" . "~/.emacs.d/archive/")))
-(setq auto-save-file-name-transforms
-  `((".*" "~/.emacs.d/archive/" t)))
+(use-package emacs
+  :custom
+  ;; Backup and Autosave
+  (backup-directory-alist '((".*" . "~/.emacs.d/archive/")))
+  (auto-save-file-name-transforms `((".*" "~/.emacs.d/archive/" t)))
+  
+  ;; macOS-specific key settings
+  (mac-option-key-is-meta t)
+  (mac-right-option-modifier nil)
+  
+  ;; UI Settings
+  (visible-bell nil)
+  (ring-bell-function 'ignore)
+  (truncate-lines nil)
 
-;; Set the Opt key on macOS to function as M-
-(setq mac-option-key-is-meta t)
-;; But free up the right option key for alt
-(setq mac-right-option-modifier nil)
-
-;; Right-click shows a context menu instead of doing whatever it did before
-(when (display-graphic-p)
+  :init
+  ;; UI tweaks
+  (blink-cursor-mode -1)
+  (menu-bar-mode -1)
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
+  
+  ;; Enable context menu if in GUI
+  (when (display-graphic-p)
   (context-menu-mode))
 
-;; Disable some app UI pieces I don't want
-(blink-cursor-mode -1)
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
+  (global-auto-revert-mode 1)
+  (global-visual-line-mode 1))
 
-;; Turn off line numbers in all modes (we can enable it in other modes)
-(global-display-line-numbers-mode -1)
-;; Turn on visual line mode, which soft-wraps at word boundaries
-(global-visual-line-mode t)
-;; Truncate long lines at the window edge
-(setq truncate-lines nil)
+;; Electric Pair Mode
+(use-package electric-
+  :hook (after-init . electric-pair-mode))
 
-;; Disable the bells
-;; Disable the visible bell
-(setq visible-bell nil)
-;; Disable the audible bell
-(setq ring-bell-function 'ignore)
+;; Org Mode Hook for Electric-Pair- Pairing Fix
+(add-hook 'org-mode-hook
+          (lambda (%)
+            (setq-local electric-pair-inhibit-predicate
+                        (lambda (c) (or (char-equal c ?<) (funcall electric-pair-inhibit-predicate c))))))
 
-;; Automatically refresh the buffer if the file has changed
-(global-auto-revert-mode t)
-
-;; Turns on automatic pairing
-(electric-pair-mode 1)
-
-;; Turn off automatic pairing for < in org-mode
-(add-hook
-  'org-mode-hook
-  (lambda ()
-    (setq-local electric-pair-inhibit-predicate
-      `
-      (lambda (c)
-        (if (char-equal c ?<)
-          t
-          (,electric-pair-inhibit-predicate c))))))
 (provide 'variables)

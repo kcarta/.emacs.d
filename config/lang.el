@@ -1,31 +1,35 @@
 ;; Turn on line numbers while code editing
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
-(use-package prettier :ensure t)
+(use-package prettier
+  :ensure t
+  :defer t)
 
-(use-package json-mode :ensure t)
+(use-package json-mode
+  :ensure t
+  :mode "\\.json\\'")
 
 (use-package markdown-mode
   :ensure t
+  :mode ("\\.md\\'" . gfm-mode)
   :commands (markdown-mode gfm-mode)
-  :mode (("README\\.md\\'" . gfm-mode))
-  :init (setq markdown-command "/usr/local/bin/multimarkdown"))
+  :custom
+  (markdown-command "/usr/local/bin/multimarkdown"))
 
-(use-package lsp-dart :ensure t :hook (dart-mode . lsp))
+(use-package lsp-dart
+  :ensure t
+  :defer t
+  :hook (dart-mode . lsp))
 
 (defun jekyll-insert-front-matter ()
   "Insert Jekyll front matter at point."
   (interactive)
-  (let ((current-date (format-time-string "%Y-%m-%d")))
-    (insert
-      (format
-        "---
+  (insert (format "---
 layout: post
 title:  \"Title goes here\"
 date:   %s 00:00:00 +0000
 tags: []
----\n"
-        current-date))))
+---\n" (format-time-string "%Y-%m-%d"))))
 
 (defun jekyll-insert-post-link (filename link-text)
   "Insert link to other post in Jekyll blog."
