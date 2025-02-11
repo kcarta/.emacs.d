@@ -13,8 +13,8 @@
 
 (use-package lsp-dart :ensure t :hook (dart-mode . lsp))
 
-(defun jekyll-insert-top-matter ()
-  "Insert Jekyll top matter at point."
+(defun jekyll-insert-front-matter ()
+  "Insert Jekyll front matter at point."
   (interactive)
   (let ((current-date (format-time-string "%Y-%m-%d")))
     (insert
