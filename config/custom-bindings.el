@@ -15,7 +15,7 @@
     :global-prefix "M-SPC") ;; access leader in insert mode
 
   (kc/leader-keys
-    "SPC" '(execute-extended-command :wk "Consult")
+    "SPC" '(execute-extended-command :wk "Execute command (M-x)")
     "." '(find-file :wk "Find file")
     "g" '(rg :wk "Ripgrep search"))
 
@@ -65,11 +65,6 @@
     "h v" '(describe-variable :wk "Describe variable")
     "h w" '(where-is :wk "Prints keybinding for command if set")
     "h x" '(describe-command :wk "Display full documentation for command"))
-
-  (kc/leader-keys
-    "h m" '(:ignore t :wk "Manuals")
-    "h m e" '((lambda () (interactive) (info "elisp")) :wk "Elisp Manual") ;; Example: "SPC hE" to open the Elisp manual
-    )
 
   (kc/leader-keys
     "e" '(:ignore t :wk "Elisp")
@@ -153,4 +148,4 @@
     "w k" '(evil-window-up :wk "Window up")
     "w l" '(evil-window-right :wk "Window right")))
 
-(provide 'bindings)
+(provide 'custom-bindings)

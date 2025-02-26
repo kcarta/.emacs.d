@@ -1,5 +1,7 @@
 # -*- mode: gitignore; -*-
 
+emacs-custom.el
+
 .cache/
 .dap-breakpoints
 
