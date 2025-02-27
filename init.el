@@ -41,8 +41,24 @@
   (global-auto-revert-mode 1)
   (global-visual-line-mode 1))
 
+(add-hook 'emacs-lisp-mode-hook 'outline-minor-mode)
+
 ;; Turn on line numbers while code editing
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+
+(setq-default mode-line-format
+      '("%e" mode-line-front-space
+	mode-line-frame-identification
+	mode-line-buffer-identification
+	mode-line-position
+	mode-line-format-right-align
+	(project-mode-line project-mode-line-format) "  "
+	mode-line-modes
+	mode-line-misc-info
+	mode-line-end-spaces))
+(setq evil-mode-line-format '(before . mode-line-modes))
+
+;;; General Packages
 
 ;; Electric Pair Mode
 (use-package electric-
@@ -51,8 +67,6 @@
 (use-package rg
   :ensure t
   :defer t)
-
-;;; General Packages
 
 (use-package dashboard
 :ensure t 
@@ -80,7 +94,6 @@
     ;; if not done, (setq org-return-follows-link t) will not work
     (define-key evil-motion-state-map (kbd "SPC") nil)
     (define-key evil-motion-state-map (kbd "RET") nil)
-    (define-key evil-motion-state-map (kbd "S-TAB") nil)
     (define-key evil-motion-state-map (kbd "TAB") nil))
 
 ;;; Theming
@@ -108,16 +121,6 @@
     (buffer-face-mode 1)
     (setq-local line-spacing 0.4)))
 
-(use-package all-the-icons
-  :ensure t
-  :if (display-graphic-p)
-  :defer t)
-
-(use-package all-the-icons-dired
-  :ensure t
-  :hook (dired-mode . all-the-icons-dired-mode)
-  :defer t)
-
 (use-package catppuccin-theme
   :ensure t
   :config
@@ -130,7 +133,6 @@
   :hook
   ((prog-mode . rainbow-delimiters-mode))
   :defer t)
-
 
 ;;; Org
 
