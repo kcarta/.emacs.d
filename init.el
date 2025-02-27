@@ -1,4 +1,5 @@
-;;; package
+;;; Startup - Packages & Custom
+
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
@@ -6,12 +7,8 @@
 (when (file-exists-p custom-file)
   (load custom-file))
 
-;; In config/
-(add-to-list 'load-path "~/.emacs.d/config/")
-(require 'custom-bindings)
-(require 'custom-commands)
+;;; Basic Variables
 
-;;; Set basic variables
 (use-package emacs
   :custom
   ;; Backup and Autosave
@@ -27,6 +24,9 @@
   (ring-bell-function 'ignore)
   (truncate-lines nil)
 
+  ;; Fold/Unfold with <tab> when in outline-minor-mode
+  (outline-minor-mode-cycle t)
+
   :init
   ;; UI tweaks
   (blink-cursor-mode -1)
@@ -36,7 +36,7 @@
   
   ;; Enable context menu if in GUI
   (when (display-graphic-p)
-  (context-menu-mode))
+    (context-menu-mode))
 
   (global-auto-revert-mode 1)
   (global-visual-line-mode 1))
@@ -48,11 +48,6 @@
 (use-package electric-
   :hook (after-init . electric-pair-mode))
 
-;; Org Mode Hook for Electric-Pair- Pairing Fix
-(add-hook 'org-mode-hook
-          (lambda (%)
-            (setq-local electric-pair-inhibit-predicate
-                        (lambda (c) (or (char-equal c ?<) (funcall electric-pair-inhibit-predicate c))))))
 (use-package rg
   :ensure t
   :defer t)
@@ -60,18 +55,17 @@
 ;;; General Packages
 
 (use-package dashboard
-  :ensure t 
-  :init
-  (setq initial-buffer-choice 'dashboard-open)
-  (setq dashboard-set-heading-icons t)
-  (setq dashboard-set-file-icons t)
-  (setq dashboard-center-content t)
-  (setq dashboard-projects-backend 'projectile)
-  (setq dashboard-items '((recents . 5) (projects . 5)))
-  :custom 
-  (dashboard-modify-heading-icons '((recents . "file-text")))
-  :config
-  (dashboard-setup-startup-hook))
+:ensure t 
+:init
+(setq initial-buffer-choice 'dashboard-open)
+(setq dashboard-set-heading-icons t)
+(setq dashboard-set-file-icons t)
+(setq dashboard-center-content t)
+(setq dashboard-items '((recents . 5) (projects . 5)))
+:custom 
+(dashboard-modify-heading-icons '((recents . "file-text")))
+:config
+(dashboard-setup-startup-hook))
 
 (use-package evil 
     :ensure t 
@@ -86,6 +80,7 @@
     ;; if not done, (setq org-return-follows-link t) will not work
     (define-key evil-motion-state-map (kbd "SPC") nil)
     (define-key evil-motion-state-map (kbd "RET") nil)
+    (define-key evil-motion-state-map (kbd "S-TAB") nil)
     (define-key evil-motion-state-map (kbd "TAB") nil))
 
 ;;; Theming
@@ -135,6 +130,7 @@
   :hook
   ((prog-mode . rainbow-delimiters-mode))
   :defer t)
+
 
 ;;; Org
 
@@ -220,7 +216,6 @@
   eshell-destroy-buffer-when-process-dies t
   eshell-visual-commands '("bash" "htop" "ssh" "top" "zsh"))
 
-
 ;;; Minibuffer
 
 ;; Vertico: Completions in the minibuffer.
@@ -288,3 +283,236 @@
   (which-key-max-description-length 25)
   (which-key-allow-imprecise-window-fit nil)
   (which-key-separator " -> "))
+
+;;; Custom Bindings
+
+(global-set-key (kbd "C-=") 'text-scale-increase)
+(global-set-key (kbd "C--") 'text-scale-decrease)
+(global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
+(global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
+
+(use-package general :ensure t
+  :config (general-evil-setup)
+
+  ;; set up 'SPC' as the global leader key
+  (general-create-definer kc/leader-keys
+    :states '(normal insert visual emacs)
+    :keymaps 'override
+    :prefix "SPC" ;; set leader
+    :global-prefix "M-SPC") ;; access leader in insert mode
+
+  (kc/leader-keys
+    "SPC" '(execute-extended-command :wk "Execute command (M-x)")
+    "." '(find-file :wk "Find file"))
+
+  (kc/leader-keys
+    "a" '(:ignore t :wk "AI")
+    "a s" '(gptel-send :wk "Send Prompt")
+    "a f" '(gptel-add-file :wk "Add File to Context")
+    "a c" '(gptel-add :wk "Add Region/Buffer to Context")
+    "a q" '(gptel-abort :wk "Abort")
+    )
+
+  (kc/leader-keys
+    "b" '(:ignore t :wk "Buffers")
+    "b b" '(switch-to-buffer :wk "Switch to buffer (C-x b)")
+    "b n" '(next-buffer :wk "Next buffer")
+    "b p" '(previous-buffer :wk "Previous buffer"))
+
+  (kc/leader-keys
+    "f" '(:ignore t :wk "Files")
+    "f c" '(lambda ()
+	     (interactive)
+	     (find-file user-init-file) :wk "Open emacs init.el")
+    "f d" '(make-directory :wk "Create directory")
+    "f f" '(project-find-file :wk "Find file in the project")
+    "f n" '(rename-file :wk "Rename (move) file")
+    "f r" '(delete-file :wk "Delete file")
+    "f y" '(copy-file :wk "Copy file"))
+
+  (kc/leader-keys
+    "h" '(:ignore t :wk "Help")
+    "h b" '(describe-bindings :wk "Describe bindings")
+    "h c" '(describe-char :wk "Describe character under cursor")
+    "h e" '(view-echo-area-messages :wk "View echo area messages")
+    "h f" '(describe-function :wk "Describe function")
+    "h F" '(describe-face :wk "Describe face")
+    "h i" '(info :wk "Info")
+    "h k" '(describe-key :wk "Describe key")
+    "h l" '(view-lossage :wk "Display recent keystrokes and the commands run")
+    "h v" '(describe-variable :wk "Describe variable")
+    "h w" '(where-is :wk "Prints keybinding for command if set")
+    "h x" '(describe-command :wk "Display full documentation for command"))
+
+  (kc/leader-keys
+    "e" '(:ignore t :wk "Elisp")
+    "e b" '(eval-buffer :wk "Evaluate elisp in buffer")
+    "e d" '(eval-defun :wk "Evaluate defun containing or after point")
+    "e e" '(eval-expression :wk "Evaluate an elisp expression")
+    "e r" '(eval-region :wk "Evaluate elisp in region"))
+
+  (kc/leader-keys
+    "l" '(:ignore t :wk "Languages")
+    "l l" '(eglot :wk "Start Eglot")
+    "l p" '(prettier-prettify :wk "Prettify buffer")
+    "l s" '(ispell :wk "Spell check"))
+
+ (kc/leader-keys
+    "m" '(:ignore t :wk "Markdown")
+    "m f" '(markdown-insert-footnote :wk "Insert footnote")
+    "m l" '(markdown-insert-link :wk "Insert link"))
+
+  (kc/leader-keys
+    "o" '(:ignore t :wk "Open")
+    "o d" '(dashboard-open :wk "Dashboard")
+    "o f" '(make-frame :wk "Open buffer in new frame")
+    "o s" '(
+      (lambda ()
+        (interactive)
+        (let ((height (truncate (* 0.3 (frame-height)))))
+          (split-window-below (- height))
+          (other-window 1)
+          (eshell)))
+      :wk "Eshell"))
+
+  (kc/leader-keys
+    "r" '(:ignore t :wk "Org")
+    "r a" '(org-archive-subtree :wk "Archive (subtree)")
+    "r r" '(org-refile :wk "Refile")
+    "r s" '(org-sort :wk "Sort")
+    "r t" '(org-set-tags-command :wk "Set tags")
+    "r T" '(org-todo-list :wk "Todo list"))
+
+  (kc/leader-keys
+    "r v" '(:ignore t :wk "Org View Settings")
+    "r v i" '(org-toggle-inline-images :wk "Toggle inline images in org mode")
+    "r v n" '(org-narrow-to-subtree :wk "Narrow to subtree")
+    "r v w" '(widen :wk "Widen")
+    )
+
+  (kc/leader-keys
+    "t" '(:ignore t :wk "Timers")
+    "t s" '(org-timer-start :wk "Start Timer")
+    "t t" '(org-timer-stop :wk "Stop Timer")
+    "t p" '(org-timer-set-timer :wk "Set Timer"))
+
+  (kc/leader-keys
+    "w" '(:ignore t :wk "Windows")
+    "w f" '(toggle-frame-fullscreen :wk "Enter/Exit fullscreen")
+    "w c" '(evil-window-delete :wk "Close window")
+    "w s" '(evil-window-split :wk "Horizontal split window")
+    "w v" '(evil-window-vsplit :wk "Vertical split window")
+    "w h" '(evil-window-left :wk "Window left")
+    "w j" '(evil-window-down :wk "Window down")
+    "w k" '(evil-window-up :wk "Window up")
+    "w l" '(evil-window-right :wk "Window right")))
+
+;;; Custom Commands and Functions
+
+(defun jekyll-insert-front-matter ()
+  "Insert Jekyll front matter at point."
+  (interactive)
+  (insert (format "---
+layout: post
+title:  \"Title goes here\"
+date:   %s 00:00:00 +0000
+tags: []
+---\n" (format-time-string "%Y-%m-%d"))))
+
+(defun jekyll-insert-post-link (filename link-text)
+  "Insert link to other post in Jekyll blog."
+  (interactive
+    (list
+      (let
+        (
+          (posts-dir
+            (expand-file-name "_posts"
+              (locate-dominating-file default-directory "_posts"))))
+        (if (and (eq major-mode 'dired-mode) (region-active-p))
+          ;; If in dired with active region, use selected filename
+          (file-name-sans-extension
+            (file-name-nondirectory (dired-get-filename)))
+          ;; Otherwise prompt with completion
+          (let*
+            (
+              (files
+                (and (file-exists-p posts-dir)
+                  (directory-files posts-dir
+                    nil
+                    "^[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}-.*\\.\\(md\\|markdown\\)$")))
+              (names (mapcar #'file-name-sans-extension files)))
+            (completing-read "Post file: " names nil t))))
+      ;; Get link text from region or prompt
+      (if (and (not (eq major-mode 'dired-mode)) (region-active-p))
+        (buffer-substring-no-properties
+          (region-beginning)
+          (region-end))
+        (read-string "Link text: "))))
+  ;; Delete region if it was active (in markdown-mode)
+  (when (and (not (eq major-mode 'dired-mode)) (region-active-p))
+    (delete-region (region-beginning) (region-end)))
+  ;; Insert the formatted markdown link
+  (insert "[" link-text "](" "{% post_url " filename " %}" ")"))
+
+(defun jekyll-insert-image (filename alt-text)
+  "Insert image link from the 'img' directory in Jekyll blog."
+  (interactive
+    (list
+      (let ((img-dir "../static/img/posts/"))
+        (if (and (eq major-mode 'dired-mode) (region-active-p))
+          ;; If in dired with active region, use selected filename
+          (file-name-nondirectory (dired-get-filename))
+          ;; Otherwise prompt with completion
+          (let
+            (
+              (files
+                (and (file-exists-p img-dir)
+                  ;; Exclude "." and ".."
+                  (directory-files img-dir nil "^[^.]"))))
+            (completing-read "Image file: " files nil t))))
+      ;; Get alt text from region or prompt
+      (if (and (not (eq major-mode 'dired-mode)) (region-active-p))
+        (buffer-substring-no-properties
+          (region-beginning)
+          (region-end))
+        (read-string "Alt text: "))))
+  ;; Insert Markdown image syntax
+  (insert (format "![%s](/static/img/posts/%s)" alt-text filename)))
+(defun my-add-org-items-to-shopping-reminders ()
+  "Extract all list items from the current Org buffer and add them to the 'Shopping' list in Apple Reminders."
+  (interactive)
+  (require 'org-element)
+  ;; Extract all list items
+  (let ((parsed (org-element-parse-buffer))
+        (items '()))
+    (org-element-map parsed 'item
+      (lambda (item)
+        (let ((content (org-element-property :contents-begin item))
+              (end (org-element-property :contents-end item)))
+          (when (and content end)
+            (push (buffer-substring-no-properties content end) items)))))
+    ;; Add each item to Apple Reminders
+    (dolist (item (reverse items))
+      (let ((as-command (format
+                         "tell application \"Reminders\"
+                            tell list \"Shopping\"
+                              make new reminder with properties {name:\"%s\"}
+                            end tell
+                          end tell"
+                         item)))
+        (message "Adding to Reminders: %s" item)  ;; Debug
+        (shell-command (format "osascript -e '%s'" as-command)))))
+  (message "All items added to the 'Shopping' list."))
+
+(defun my-add-item-to-shopping-reminders (item)
+  "Prompt for ITEM and add it to the ‘Shopping’ list in Apple Reminders."
+  (interactive "sAdd item to Shopping: ")
+  (let ((as-command (format
+	"tell application \"Reminders\"
+		tell list \"Shopping\"
+			make new reminder with properties {name:\"%s\"}
+		end tell
+	end tell"
+	item)))
+    (message "AppleScript: %s" as-command)  ;; Debug
+    (shell-command (format "osascript -e '%s'" as-command))))
