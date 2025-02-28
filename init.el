@@ -17,7 +17,7 @@
   
   ;; macOS-specific key settings
   (mac-option-key-is-meta t)
-  (mac-right-option-modifier nil)
+  (mac-right-command-modifier 'meta)
   
   ;; UI Settings
   (visible-bell nil)
@@ -30,7 +30,7 @@
   :init
   ;; UI tweaks
   (blink-cursor-mode -1)
-  (menu-bar-mode -1)
+  ;; Ugly toolbar in macOS window
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
   
@@ -38,9 +38,12 @@
   (when (display-graphic-p)
     (context-menu-mode))
 
+  ;; Auto-update buffer when underlying file has been changed
   (global-auto-revert-mode 1)
+  ;; Line editing on visible, not logical, lines
   (global-visual-line-mode 1))
 
+;; Enable folding in elisp code (mostly used in init.el)
 (add-hook 'emacs-lisp-mode-hook 'outline-minor-mode)
 
 ;; Turn on line numbers while code editing
@@ -49,14 +52,13 @@
 (setq-default mode-line-format
       '("%e" mode-line-front-space
 	mode-line-frame-identification
-	mode-line-buffer-identification
+	mode-line-buffer-identification "  "
 	mode-line-position
 	mode-line-format-right-align
 	(project-mode-line project-mode-line-format) "  "
 	mode-line-modes
 	mode-line-misc-info
 	mode-line-end-spaces))
-(setq evil-mode-line-format '(before . mode-line-modes))
 
 ;;; General Packages
 
@@ -69,17 +71,17 @@
   :defer t)
 
 (use-package dashboard
-:ensure t 
-:init
-(setq initial-buffer-choice 'dashboard-open)
-(setq dashboard-set-heading-icons t)
-(setq dashboard-set-file-icons t)
-(setq dashboard-center-content t)
-(setq dashboard-items '((recents . 5) (projects . 5)))
-:custom 
-(dashboard-modify-heading-icons '((recents . "file-text")))
-:config
-(dashboard-setup-startup-hook))
+  :ensure t 
+  :init
+  (setq initial-buffer-choice 'dashboard-open)
+  (setq dashboard-set-heading-icons t)
+  (setq dashboard-set-file-icons t)
+  (setq dashboard-center-content t)
+  (setq dashboard-items '((recents . 5) (projects . 5)))
+  :custom 
+  (dashboard-modify-heading-icons '((recents . "file-text")))
+  :config
+  (dashboard-setup-startup-hook))
 
 (use-package evil 
     :ensure t 
@@ -88,10 +90,13 @@
     (evil-want-keybinding nil)
     (evil-auto-indent nil)
     (org-return-follows-link t)
+    (evil-mode-line-format '(before . mode-line-modes))
     :config
     (evil-mode)
     ;; Unmap keys in 'evil-maps
     ;; if not done, (setq org-return-follows-link t) will not work
+    (evil-set-leader 'normal (kbd "SPC"))  ;; Set SPC as leader
+    (define-key evil-normal-state-map (kbd "SPC SPC") 'execute-extended-command)
     (define-key evil-motion-state-map (kbd "SPC") nil)
     (define-key evil-motion-state-map (kbd "RET") nil)
     (define-key evil-motion-state-map (kbd "TAB") nil))
@@ -115,11 +120,11 @@
 
 ;; Create a hook for markdown-mode to use the variable-pitch face
 (add-hook 'markdown-mode-hook
-  (lambda ()
-    (variable-pitch-mode 1)
-    (setq buffer-face-mode-face 'variable-pitch)
-    (buffer-face-mode 1)
-    (setq-local line-spacing 0.4)))
+	  (lambda ()
+	    (variable-pitch-mode 1)
+	    (setq buffer-face-mode-face 'variable-pitch)
+	    (buffer-face-mode 1)
+	    (setq-local line-spacing 0.4)))
 
 (use-package catppuccin-theme
   :ensure t
@@ -173,28 +178,7 @@
   :custom
   (markdown-command "/usr/local/bin/multimarkdown"))
 
-;;; AI
-
-(use-package gptel
-  :ensure t
-  :defer t
-  :custom
-  (gptel-model 'phi4:latest)
-  :init
-  (setq gptel-backend (gptel-make-ollama "Ollama"
-			:host "localhost:11434"
-			:stream t
-			:models '(phi4:latest))))
-
 ;;; Shells
-
-(use-package exec-path-from-shell
-  :ensure t
-  :if (display-graphic-p) ;; Only run in GUI mode
-  :init
-  (exec-path-from-shell-initialize)
-  :custom
-  (exec-path-from-shell-variables '("PATH" "MANPATH" "SHELL")))
 
 (use-package eshell-toggle
   :ensure t
@@ -286,130 +270,15 @@
   (which-key-allow-imprecise-window-fit nil)
   (which-key-separator " -> "))
 
-;;; Custom Bindings
+;;; Custom Bindings, Commands, and Functions
 
 (global-set-key (kbd "C-=") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
-(global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
-(global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
 
-(use-package general :ensure t
-  :config (general-evil-setup)
-
-  ;; set up 'SPC' as the global leader key
-  (general-create-definer kc/leader-keys
-    :states '(normal insert visual emacs)
-    :keymaps 'override
-    :prefix "SPC" ;; set leader
-    :global-prefix "M-SPC") ;; access leader in insert mode
-
-  (kc/leader-keys
-    "SPC" '(execute-extended-command :wk "Execute command (M-x)")
-    "." '(find-file :wk "Find file"))
-
-  (kc/leader-keys
-    "a" '(:ignore t :wk "AI")
-    "a s" '(gptel-send :wk "Send Prompt")
-    "a f" '(gptel-add-file :wk "Add File to Context")
-    "a c" '(gptel-add :wk "Add Region/Buffer to Context")
-    "a q" '(gptel-abort :wk "Abort")
-    )
-
-  (kc/leader-keys
-    "b" '(:ignore t :wk "Buffers")
-    "b b" '(switch-to-buffer :wk "Switch to buffer (C-x b)")
-    "b n" '(next-buffer :wk "Next buffer")
-    "b p" '(previous-buffer :wk "Previous buffer"))
-
-  (kc/leader-keys
-    "f" '(:ignore t :wk "Files")
-    "f c" '(lambda ()
-	     (interactive)
-	     (find-file user-init-file) :wk "Open emacs init.el")
-    "f d" '(make-directory :wk "Create directory")
-    "f f" '(project-find-file :wk "Find file in the project")
-    "f n" '(rename-file :wk "Rename (move) file")
-    "f r" '(delete-file :wk "Delete file")
-    "f y" '(copy-file :wk "Copy file"))
-
-  (kc/leader-keys
-    "h" '(:ignore t :wk "Help")
-    "h b" '(describe-bindings :wk "Describe bindings")
-    "h c" '(describe-char :wk "Describe character under cursor")
-    "h e" '(view-echo-area-messages :wk "View echo area messages")
-    "h f" '(describe-function :wk "Describe function")
-    "h F" '(describe-face :wk "Describe face")
-    "h i" '(info :wk "Info")
-    "h k" '(describe-key :wk "Describe key")
-    "h l" '(view-lossage :wk "Display recent keystrokes and the commands run")
-    "h v" '(describe-variable :wk "Describe variable")
-    "h w" '(where-is :wk "Prints keybinding for command if set")
-    "h x" '(describe-command :wk "Display full documentation for command"))
-
-  (kc/leader-keys
-    "e" '(:ignore t :wk "Elisp")
-    "e b" '(eval-buffer :wk "Evaluate elisp in buffer")
-    "e d" '(eval-defun :wk "Evaluate defun containing or after point")
-    "e e" '(eval-expression :wk "Evaluate an elisp expression")
-    "e r" '(eval-region :wk "Evaluate elisp in region"))
-
-  (kc/leader-keys
-    "l" '(:ignore t :wk "Languages")
-    "l l" '(eglot :wk "Start Eglot")
-    "l p" '(prettier-prettify :wk "Prettify buffer")
-    "l s" '(ispell :wk "Spell check"))
-
- (kc/leader-keys
-    "m" '(:ignore t :wk "Markdown")
-    "m f" '(markdown-insert-footnote :wk "Insert footnote")
-    "m l" '(markdown-insert-link :wk "Insert link"))
-
-  (kc/leader-keys
-    "o" '(:ignore t :wk "Open")
-    "o d" '(dashboard-open :wk "Dashboard")
-    "o f" '(make-frame :wk "Open buffer in new frame")
-    "o s" '(
-      (lambda ()
-        (interactive)
-        (let ((height (truncate (* 0.3 (frame-height)))))
-          (split-window-below (- height))
-          (other-window 1)
-          (eshell)))
-      :wk "Eshell"))
-
-  (kc/leader-keys
-    "r" '(:ignore t :wk "Org")
-    "r a" '(org-archive-subtree :wk "Archive (subtree)")
-    "r r" '(org-refile :wk "Refile")
-    "r s" '(org-sort :wk "Sort")
-    "r t" '(org-set-tags-command :wk "Set tags")
-    "r T" '(org-todo-list :wk "Todo list"))
-
-  (kc/leader-keys
-    "r v" '(:ignore t :wk "Org View Settings")
-    "r v i" '(org-toggle-inline-images :wk "Toggle inline images in org mode")
-    "r v n" '(org-narrow-to-subtree :wk "Narrow to subtree")
-    "r v w" '(widen :wk "Widen")
-    )
-
-  (kc/leader-keys
-    "t" '(:ignore t :wk "Timers")
-    "t s" '(org-timer-start :wk "Start Timer")
-    "t t" '(org-timer-stop :wk "Stop Timer")
-    "t p" '(org-timer-set-timer :wk "Set Timer"))
-
-  (kc/leader-keys
-    "w" '(:ignore t :wk "Windows")
-    "w f" '(toggle-frame-fullscreen :wk "Enter/Exit fullscreen")
-    "w c" '(evil-window-delete :wk "Close window")
-    "w s" '(evil-window-split :wk "Horizontal split window")
-    "w v" '(evil-window-vsplit :wk "Vertical split window")
-    "w h" '(evil-window-left :wk "Window left")
-    "w j" '(evil-window-down :wk "Window down")
-    "w k" '(evil-window-up :wk "Window up")
-    "w l" '(evil-window-right :wk "Window right")))
-
-;;; Custom Commands and Functions
+(defun my/open-init-file ()
+  (interactive)
+  (find-file user-init-file))
+(global-set-key (kbd "C-c i") #'my/open-init-file)
 
 (defun jekyll-insert-front-matter ()
   "Insert Jekyll front matter at point."
