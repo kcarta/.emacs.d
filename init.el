@@ -59,6 +59,8 @@
 	mode-line-modes
 	mode-line-misc-info
 	mode-line-end-spaces))
+;; Don't show any minor modes in the mode line
+(setq minor-mode-alist nil)
 
 ;;; General Packages
 
@@ -97,6 +99,7 @@
     ;; if not done, (setq org-return-follows-link t) will not work
     (evil-set-leader 'normal (kbd "SPC"))  ;; Set SPC as leader
     (define-key evil-normal-state-map (kbd "SPC SPC") 'execute-extended-command)
+    (define-key evil-normal-state-map (kbd "SPC .") 'project-find-file)
     (define-key evil-motion-state-map (kbd "SPC") nil)
     (define-key evil-motion-state-map (kbd "RET") nil)
     (define-key evil-motion-state-map (kbd "TAB") nil))
@@ -149,6 +152,7 @@
   (org-agenda-files '("~/notes"))
   (org-archive-location "~/notes/archive")
   (org-agenda-remove-tags t)
+  (org-reverse-note-order t) ; Refile to beginning on headers instead of the end
   (org-agenda-prefix-format '((todo . " %15c: ")))
   (org-todo-keywords '((sequence "TODO(t)"
 				 "|"
