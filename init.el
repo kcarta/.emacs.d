@@ -18,6 +18,7 @@
   ;; macOS-specific key settings
   (mac-option-key-is-meta t)
   (mac-right-command-modifier 'meta)
+  (mac-right-option-modifier 'none) ; Let me use right-option to enter symbols like []
   
   ;; UI Settings
   (visible-bell nil)
@@ -150,9 +151,13 @@
   (org-auto-align-tags nil)
   (org-tags-column 0)
   (org-agenda-files '("~/notes"))
-  (org-archive-location "~/notes/archive")
-  (org-agenda-remove-tags t)
+  (org-archive-location "::* archive") ; Archive entries under the * archive tree
+  ;; Properties are auto-added to archived items
+  ;; I'm only interested in archived timestamp
+  (org-archive-save-context-info '(time))
+  (org-archive-reversed-order t) ; Archive to beginning of header instead of the end
   (org-reverse-note-order t) ; Refile to beginning on headers instead of the end
+  (org-agenda-remove-tags t)
   (org-agenda-prefix-format '((todo . " %15c: ")))
   (org-todo-keywords '((sequence "TODO(t)"
 				 "|"
@@ -160,10 +165,10 @@
   (org-priority-lowest 4)
   (org-priority-default 3)
   (org-priority-highest 1))
-;(setq org-refile-use-outline-path 'file)
 
-;(setq org-refile-targets
-    ;'((nil :maxlevel . 1) (org-agenda-files :level . 1)))
+(let ((custom-file (expand-file-name "custom-org-capture-templates.el" user-emacs-directory)))
+  (when (file-exists-p custom-file)
+    (load custom-file)))
 
 ;;; Programming
 
