@@ -94,6 +94,7 @@
     (evil-auto-indent nil)
     (org-return-follows-link t)
     (evil-mode-line-format '(before . mode-line-modes))
+    (evil-shift-width 2)
     :config
     (evil-mode)
     ;; Unmap keys in 'evil-maps
@@ -185,7 +186,7 @@
   :mode ("\\.md\\'" . gfm-mode)
   :commands (markdown-mode gfm-mode)
   :custom
-  (markdown-command "/usr/local/bin/multimarkdown"))
+  (markdown-command "/opt/homebrew/bin/multimarkdown"))
 
 ;;; Shells
 
