@@ -27,6 +27,9 @@
   ;; Fold/Unfold with <tab> when in outline-minor-mode
   (outline-minor-mode-cycle t)
 
+  (scroll-conservatively 10)
+  (scroll-margin 25)
+
   :init
   ;; UI tweaks
   (blink-cursor-mode -1)
@@ -41,7 +44,15 @@
   ;; Auto-update buffer when underlying file has been changed
   (global-auto-revert-mode 1)
   ;; Line editing on visible, not logical, lines
-  (global-visual-line-mode 1))
+  (global-visual-line-mode 1)
+
+  ;; Pixel (not line) scrolling when using trackpad
+  ;; BUG: does not play well with scroll-margin
+  ;; I'd rather have chill line scrolling
+  ;(pixel-scroll-precision-mode 1)
+  )
+
+
 
 ;; Turn on line numbers while code editing
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
