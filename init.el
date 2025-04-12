@@ -188,30 +188,6 @@
   :custom
   (markdown-command "/opt/homebrew/bin/multimarkdown"))
 
-;;; Shells
-
-(use-package eshell-toggle
-  :ensure t
-  :defer t
-  :custom
-  (eshell-toggle-size-fraction 3)
-  (eshell-toggle-run-command nil)
-  (eshell-toggle-init-function #'eshell-toggle-init-ansi-term))
-
-(use-package eshell-syntax-highlighting
-  :ensure t
-  :hook (eshell-mode . eshell-syntax-highlighting-global-mode))
-
-(setq
-  eshell-rc-script (concat user-emacs-directory "eshell/profile")
-  eshell-aliases-file (concat user-emacs-directory "eshell/aliases")
-  eshell-history-size 5000
-  eshell-buffer-maximum-lines 5000
-  eshell-hist-ignoredups t
-  eshell-scroll-to-bottom-on-input t
-  eshell-destroy-buffer-when-process-dies t
-  eshell-visual-commands '("bash" "htop" "ssh" "top" "zsh"))
-
 ;;; Minibuffer
 
 ;; Vertico: Completions in the minibuffer.
@@ -264,7 +240,6 @@
 
 ;; which-key: show keybindings in the minibuffer
 (use-package which-key
-  :ensure t
   :init (which-key-mode)
   :custom
   (which-key-side-window-location 'bottom)
