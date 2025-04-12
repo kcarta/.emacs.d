@@ -8,7 +8,6 @@
   (load custom-file))
 
 ;;; Basic Variables
-
 (use-package emacs
   :custom
   ;; Backup and Autosave
@@ -43,9 +42,6 @@
   (global-auto-revert-mode 1)
   ;; Line editing on visible, not logical, lines
   (global-visual-line-mode 1))
-
-;; Enable folding in elisp code (mostly used in init.el)
-(add-hook 'emacs-lisp-mode-hook 'outline-minor-mode)
 
 ;; Turn on line numbers while code editing
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
@@ -170,6 +166,13 @@
 (let ((custom-file (expand-file-name "custom-org-capture-templates.el" user-emacs-directory)))
   (when (file-exists-p custom-file)
     (load custom-file)))
+
+(defun my-org-mode-margins ()
+  "Set tasteful margins when in Org mode"
+  (setq left-margin-width 1
+	right-margin-width 1)
+  (set-fringe-mode 3))
+(add-hook 'org-mode-hook 'my-org-mode-margins)
 
 ;;; Programming
 
