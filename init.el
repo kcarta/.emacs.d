@@ -30,6 +30,20 @@
   (scroll-conservatively 10)
   (scroll-margin 25)
 
+  ;; Corfu
+  ;; Enable indentation+completion using the TAB key.
+  ;; `completion-at-point' is often bound to M-TAB.
+  (tab-always-indent 'complete)
+
+  ;; Emacs 30 and newer: Disable Ispell completion function.
+  ;; Try `cape-dict' as an alternative.
+  (text-mode-ispell-word-completion nil)
+  
+  ;; Hide commands in M-x which do not apply to the current mode.
+  ;; Corfu commands are hidden, since they are not used via M-x.
+  ;; This setting is useful beyond Corfu.
+  (read-extended-command-predicate #'command-completion-default-include-p)
+
   :init
   ;; UI tweaks
   (blink-cursor-mode -1)
@@ -48,11 +62,17 @@
 
   ;; Pixel (not line) scrolling when using trackpad
   ;; BUG: does not play well with scroll-margin
-  ;; I'd rather have chill line scrolling
+  ;; I'd rather have chill line scrolling via cursor movement
   ;(pixel-scroll-precision-mode 1)
-  )
 
-
+  ;; MINAD-stack configurations
+  ;; Vertico
+  ;; Do not allow the cursor in the minibuffer prompt
+  (setq minibuffer-prompt-properties
+	'(read-only t cursor-intangible t face minibuffer-prompt))
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+  ;; Support opening new minibuffers from inside existing minibuffers.
+  (setq enable-recursive-minibuffers t))
 
 ;; Turn on line numbers while code editing
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
@@ -191,10 +211,6 @@
   :ensure t
   :defer t)
 
-(use-package json-mode
-  :ensure t
-  :mode "\\.json\\'")
-
 (use-package markdown-mode
   :ensure t
   :mode ("\\.md\\'" . gfm-mode)
@@ -202,7 +218,7 @@
   :custom
   (markdown-command "/opt/homebrew/bin/multimarkdown"))
 
-;;; Minibuffer
+;;; Completions
 
 ;; Vertico: Completions in the minibuffer.
 (use-package vertico
@@ -227,31 +243,6 @@
   ;; Marginalia must be activated in the :init section of use-package such that the mode gets enabled right away. Note that this forces loading the package.
   (marginalia-mode))
 
-;; A few more useful Minad-stack configurations...
-(use-package emacs
-  :init
-  ;; vertico
-  ;; Add prompt indicator to `completing-read-multiple'.
-  ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
-  (defun crm-indicator (args)
-    (cons
-      (format "[CRM%s] %s"
-        (replace-regexp-in-string
-          "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'"
-          ""
-          crm-separator)
-        (car args))
-      (cdr args)))
-  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
-
-  ;; Do not allow the cursor in the minibuffer prompt
-  (setq minibuffer-prompt-properties
-    '(read-only t cursor-intangible t face minibuffer-prompt))
-  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
-
-  ;; Support opening new minibuffers from inside existing minibuffers.
-  (setq enable-recursive-minibuffers t))
-
 ;; which-key: show keybindings in the minibuffer
 (use-package which-key
   :init (which-key-mode)
@@ -269,6 +260,14 @@
   (which-key-allow-imprecise-window-fit nil)
   (which-key-separator " -> "))
 
+(use-package corfu
+  :ensure t
+  :init
+  (global-corfu-mode)
+  ;; (corfu-popupinfo-mode) ; Shows a documentation pop-up in the window
+  (corfu-echo-mode) ; Shows documentation in the echo area
+  )
+
 ;;; Custom Bindings, Commands, and Functions
 
 (global-set-key (kbd "C-=") 'text-scale-increase)
@@ -279,7 +278,7 @@
   (find-file user-init-file))
 (global-set-key (kbd "C-c i") #'my/open-init-file)
 
-(defun jekyll-insert-front-matter ()
+(defun my/jekyll-insert-front-matter ()
   "Insert Jekyll front matter at point."
   (interactive)
   (insert (format "---
@@ -289,7 +288,7 @@ date:   %s 00:00:00 +0000
 tags: []
 ---\n" (format-time-string "%Y-%m-%d"))))
 
-(defun jekyll-insert-post-link (filename link-text)
+(defun my/jekyll-insert-post-link (filename link-text)
   "Insert link to other post in Jekyll blog."
   (interactive
     (list
@@ -324,7 +323,7 @@ tags: []
   ;; Insert the formatted markdown link
   (insert "[" link-text "](" "{% post_url " filename " %}" ")"))
 
-(defun jekyll-insert-image (filename alt-text)
+(defun my/jekyll-insert-image (filename alt-text)
   "Insert image link from the 'img' directory in Jekyll blog."
   (interactive
     (list
@@ -348,7 +347,8 @@ tags: []
         (read-string "Alt text: "))))
   ;; Insert Markdown image syntax
   (insert (format "![%s](/static/img/posts/%s)" alt-text filename)))
-(defun my-add-org-items-to-shopping-reminders ()
+
+(defun my/add-org-items-to-shopping-reminders ()
   "Extract all list items from the current Org buffer and add them to the 'Shopping' list in Apple Reminders."
   (interactive)
   (require 'org-element)
@@ -374,7 +374,7 @@ tags: []
         (shell-command (format "osascript -e '%s'" as-command)))))
   (message "All items added to the 'Shopping' list."))
 
-(defun my-add-item-to-shopping-reminders (item)
+(defun my/add-item-to-shopping-reminders (item)
   "Prompt for ITEM and add it to the ‘Shopping’ list in Apple Reminders."
   (interactive "sAdd item to Shopping: ")
   (let ((as-command (format
