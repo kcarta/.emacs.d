@@ -1,7 +1,13 @@
 ;;; Startup - Packages & Custom
+;; Load from the Elpaca init file, from https://github.com/progfolio/elpaca
+(setq elpaca-init "~/.emacs.d/elpaca-init.el")
+(when (file-exists-p elpaca-init)
+  (load elpaca-init))
 
-(require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+;; Install use-package support
+(elpaca elpaca-use-package
+  ;; Enable use-package :ensure support for Elpaca.
+  (elpaca-use-package-mode))
 
 (setq custom-file "~/.emacs.d/emacs-custom.el")
 (when (file-exists-p custom-file)
