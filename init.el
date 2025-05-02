@@ -207,6 +207,20 @@
 
 ;;; Programming
 
+;; Make sure emacs has the correct environment variables loaded
+(use-package exec-path-from-shell
+  :ensure t
+  :config
+  (exec-path-from-shell-initialize))
+
+;; Ruby completion, documentation, & navigation
+(use-package robe
+  :ensure t
+  :defer t
+  :hook
+  (ruby-mode-hook . robe-mode)
+  (ruby-ts-mode-hook . robe-mode))
+
 (use-package prettier
   :ensure t
   :defer t)
