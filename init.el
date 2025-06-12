@@ -36,6 +36,9 @@
   (scroll-conservatively 10)
   (scroll-margin 25)
 
+  ;; I want to edit the actual file when opening a symlink
+  (vc-follow-symlinks t)
+
   ;; Corfu
   ;; Enable indentation+completion using the TAB key.
   ;; `completion-at-point' is often bound to M-TAB.
@@ -84,22 +87,29 @@
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
 (setq-default mode-line-format
-      '("%e" mode-line-front-space
-	mode-line-frame-identification
-	mode-line-buffer-identification "  "
-	mode-line-position
-	mode-line-format-right-align
-	(project-mode-line project-mode-line-format) "  "
-	mode-line-modes
-	mode-line-misc-info
-	mode-line-end-spaces))
+      '(
+	"%e" ; Display error message if there are redisplay errors
+	mode-line-front-space ; Space at start of modeline
+	mode-line-frame-identification ; Show frame name (only in non-selected windows, normally)
+	mode-line-buffer-identification ; Shows current buffer name
+	"  " ; Tasteful spaces
+	mode-line-position ; Line/column number, region info, etc.
+	mode-line-format-right-align ; Align following to the right
+	;; <Evil mode goes here>
+	(project-mode-line project-mode-line-format) ; Shows project.el info
+	"  " ; Tasteful spaces
+	mode-line-modes ; Major mode, minor modes
+	mode-line-misc-info ; Any other info
+	mode-line-end-spaces ; Fills remainder with spaces
+	))
 ;; Don't show any minor modes in the mode line
+;; (Assuming they add themselves to this alist instead of injecting themselves directly)
 (setq minor-mode-alist nil)
 
 ;;; General Packages
 
-;; Electric Pair Mode
-(use-package electric-
+;; Electric Pair Mode: automatically insert a matching delimiter
+(use-package electric-pair
   :hook (after-init . electric-pair-mode))
 
 (use-package rg
@@ -138,6 +148,21 @@
     (define-key evil-motion-state-map (kbd "SPC") nil)
     (define-key evil-motion-state-map (kbd "RET") nil)
     (define-key evil-motion-state-map (kbd "TAB") nil))
+
+(use-package slash-commands
+  :ensure (:host github :repo "bluzky/slash-commands")
+  :config
+  (global-slash-commands-mode 1))
+
+;; Simple command example
+;;(defun insert-date ()
+  ;;"Insert current date at point."
+  ;;(interactive)
+  ;;(insert (format-time-string "%Y-%m-%d")))
+
+;; Register it
+;;(slash-commands-register-commands
+ ;;'(("date" . insert-date)))
 
 ;;; Theming
 
@@ -200,16 +225,13 @@
   (org-priority-default 3)
   (org-priority-highest 1))
 
+(global-set-key (kbd "C-c l") #'org-store-link)
+(global-set-key (kbd "C-c a") #'org-agenda)
+(global-set-key (kbd "C-c c") #'org-capture)
+
 (let ((custom-file (expand-file-name "custom-org-capture-templates.el" user-emacs-directory)))
   (when (file-exists-p custom-file)
     (load custom-file)))
-
-(defun my-org-mode-margins ()
-  "Set tasteful margins when in Org mode"
-  (setq left-margin-width 1
-	right-margin-width 1)
-  (set-fringe-mode 3))
-(add-hook 'org-mode-hook 'my-org-mode-margins)
 
 ;;; Programming
 
