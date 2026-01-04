@@ -6,7 +6,7 @@
 
 ;; Install use-package support
 (elpaca elpaca-use-package
-  ;; Enable use-package :ensure support for Elpaca.
+ ;; Enable use-package :ensure support for Elpaca.
   (elpaca-use-package-mode))
 
 (setq custom-file "~/.emacs.d/emacs-custom.el")
@@ -202,7 +202,7 @@
   ((prog-mode . rainbow-delimiters-mode))
   :defer t)
 
-;;; Org
+;;; Writing
 
 (use-package org
   :custom
@@ -233,6 +233,24 @@
   (when (file-exists-p custom-file)
     (load custom-file)))
 
+(use-package markdown-mode
+  :ensure t
+  :mode ("\\.md\\'" . gfm-mode)
+  :commands (markdown-mode gfm-mode)
+  :custom
+  (markdown-command "/opt/homebrew/bin/multimarkdown"))
+
+(use-package whisper
+  :ensure (:host github :repo "natrys/whisper.el")
+  :config
+  ;; :0 appears to be default mic input on macOS
+  (setq whisper--ffmpeg-input-device ":0")
+  ;; set to 'local to run as a http server for better performance on repeat request
+  (setq whisper-server-mode nil)
+  (setq whisper-model "large-v3-turbo")
+  (setq whisper-return-cursor-to-start nil)
+  :bind ("<f5>" . whisper-run))
+
 ;;; Programming
 
 ;; Make sure emacs has the correct environment variables loaded
@@ -241,24 +259,9 @@
   :config
   (exec-path-from-shell-initialize))
 
-;; Ruby completion, documentation, & navigation
-(use-package robe
-  :ensure t
-  :defer t
-  :hook
-  (ruby-mode-hook . robe-mode)
-  (ruby-ts-mode-hook . robe-mode))
-
 (use-package prettier
   :ensure t
   :defer t)
-
-(use-package markdown-mode
-  :ensure t
-  :mode ("\\.md\\'" . gfm-mode)
-  :commands (markdown-mode gfm-mode)
-  :custom
-  (markdown-command "/opt/homebrew/bin/multimarkdown"))
 
 ;;; Completions
 
