@@ -333,6 +333,24 @@ date:   %s 00:00:00 +0000
 tags: []
 ---\n" (format-time-string "%Y-%m-%d"))))
 
+(defun my/jekyll-serve-start ()
+  "Start Jekyll server from project root."
+  (interactive)
+  (let ((default-directory (project-root (project-current t))))
+    (async-shell-command "bundle exec jekyll serve" "*jekyll-serve*")))
+
+(defun my/jekyll-serve-stop ()
+  "Stop the Jekyll server by killing its buffer."
+  (interactive)
+  (let ((buffer (get-buffer "*jekyll-serve*")))
+    (when buffer
+      (kill-buffer buffer))))
+
+;; Don't pop open a new window when a new Jekyll serve buffer is started
+(add-to-list 'display-buffer-alist
+             '("\\*jekyll-serve\\*"
+               (display-buffer-no-window)))
+
 (defun my/jekyll-insert-post-link (filename link-text)
   "Insert link to other post in Jekyll blog."
   (interactive
