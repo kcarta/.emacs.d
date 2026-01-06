@@ -1,5 +1,6 @@
 # -*- mode: gitignore; -*-
 
+custom-org-capture-templates.el
 emacs-custom.el
 
 .cache/
